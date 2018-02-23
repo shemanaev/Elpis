@@ -53,7 +53,7 @@ namespace PandoraSharpPlayer
         public delegate void ConnectionEventHandler(object sender, bool state, ErrorCodes code);
 
         public delegate void LogoutEventHandler(object sender);
-        
+
         public delegate void ExceptionEventHandler(object sender, ErrorCodes code, Exception ex);
 
         public delegate void FeedbackUpdateEventHandler(object sender, Song song, bool success);
@@ -225,7 +225,7 @@ namespace PandoraSharpPlayer
         void _cqman_NextRequest(object sender)
         {
             Next();
-        }  
+        }
 
         public void RegisterPlayerControlQuery(IPlayerControlQuery obj)
         {
@@ -233,7 +233,7 @@ namespace PandoraSharpPlayer
 
             _cqman.RegisterPlayerControlQuery(obj);
         }
-      
+
         public void SetProxy(string address, int port, string user = "", string password = "")
         {
             PRequest.SetProxy(address, port, user, password);
@@ -476,7 +476,7 @@ namespace PandoraSharpPlayer
                     _playNext = false;
                 }
 
-                _playNext = false; 
+                _playNext = false;
             }
         }
 
@@ -594,8 +594,8 @@ namespace PandoraSharpPlayer
         public Station GetStationFromString(string nameOrID)
         {
             Station s = null;
-            if(nameOrID != null)
-            {    
+            if (nameOrID != null)
+            {
                 if (Regex.IsMatch(nameOrID, @"^[0-9]+$"))
                 {
                     s = GetStationFromID(nameOrID);
@@ -605,7 +605,7 @@ namespace PandoraSharpPlayer
                     s = GetStationFromName(nameOrID);
                 }
             }
-            
+
             return s;
         }
 
@@ -624,11 +624,14 @@ namespace PandoraSharpPlayer
 
         public Station GetStationFromName(string stationName)
         {
-            foreach (Station s in Stations)
+            if (Stations != null)
             {
-                if (stationName == s.Name)
+                foreach (Station s in Stations)
                 {
-                    return s;
+                    if (stationName == s.Name)
+                    {
+                        return s;
+                    }
                 }
             }
 
@@ -790,7 +793,7 @@ namespace PandoraSharpPlayer
         public void PlayPause()
         {
             if (!IsStationLoaded) return;
-            RunTask(() => 
+            RunTask(() =>
             {
                 if (_isPlayPause) return;
                 _isPlayPause = true;

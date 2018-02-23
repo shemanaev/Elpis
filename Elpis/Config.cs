@@ -110,6 +110,7 @@ namespace Elpis
         public static MapConfigEntry Elpis_RemoteControlEnabled = new MapConfigEntry("Elpis_RemoteControlEnabled", true);
         public static MapConfigEntry Elpis_MinimizeToTray = new MapConfigEntry("Elpis_MinimizeToTray", false);
         public static MapConfigEntry Elpis_ShowTrayNotifications = new MapConfigEntry("Elpis_ShowTrayNotifications", true);
+        public static MapConfigEntry Elpis_StartMinimized = new MapConfigEntry("Elpis_StartMinimized", false);
         public static MapConfigEntry Elpis_StartupLocation = new MapConfigEntry("Elpis_StartupLocation", "");
         public static MapConfigEntry Elpis_StartupSize = new MapConfigEntry("Elpis_StartupSize", "");
         public static MapConfigEntry Elpis_Volume = new MapConfigEntry("Elpis_Volume", 100);
@@ -158,6 +159,7 @@ namespace Elpis
         public bool Elpis_RemoteControlEnabled { get; set; }
 
         public bool Elpis_MinimizeToTray { get; set; }
+        public bool Elpis_StartMinimized { get; set; }
         public bool Elpis_ShowTrayNotifications { get; set; }
         public int Elpis_Volume { get; set; }
         public bool Elpis_PauseOnLock { get; set; }
@@ -260,6 +262,8 @@ namespace Elpis
             Fields.LastFM_Scrobble = (bool) _c.GetValue(ConfigItems.LastFM_Scrobble);
             Fields.LastFM_SessionKey = _c.GetEncryptedString(ConfigItems.LastFM_SessionKey);
 
+            Fields.Elpis_StartMinimized = (bool) _c.GetValue(ConfigItems.Elpis_StartMinimized);
+
             var location = (string) _c.GetValue(ConfigItems.Elpis_StartupLocation);
             try
             {
@@ -340,6 +344,7 @@ namespace Elpis
                 _c.SetEncryptedString(ConfigItems.LastFM_SessionKey, Fields.LastFM_SessionKey);
 
 
+                _c.SetValue(ConfigItems.Elpis_StartMinimized, Fields.Elpis_StartMinimized);
                 _c.SetValue(ConfigItems.Elpis_StartupLocation, Fields.Elpis_StartupLocation.ToString());
                 _c.SetValue(ConfigItems.Elpis_StartupSize, Fields.Elpis_StartupSize.ToString());
                 _c.SetValue(ConfigItems.Elpis_Volume, Fields.Elpis_Volume);

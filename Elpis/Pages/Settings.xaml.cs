@@ -82,6 +82,7 @@ namespace Elpis
         private void LoadConfig()
         {
             chkAutoLogin.IsChecked = _config.Fields.Login_AutoLogin;
+            chkStartMinimized.IsChecked = _config.Fields.Elpis_StartMinimized;
             cmbAudioFormat.SelectedValue = _config.Fields.Pandora_AudioFormat;
             cmbStationSort.SelectedValue = _config.Fields.Pandora_StationSortOrder;
 
@@ -144,6 +145,7 @@ namespace Elpis
         private void SaveConfig()
         {
             _config.Fields.Login_AutoLogin = (bool) chkAutoLogin.IsChecked;
+            _config.Fields.Elpis_StartMinimized = (bool) chkStartMinimized.IsChecked;
             _config.Fields.Pandora_AudioFormat = (string) cmbAudioFormat.SelectedValue;
             _config.Fields.Pandora_StationSortOrder = (string) cmbStationSort.SelectedValue;
             if (!_config.Fields.Pandora_AutoPlay &&
