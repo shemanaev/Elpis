@@ -345,8 +345,8 @@ namespace Elpis
 
 
                 _c.SetValue(ConfigItems.Elpis_StartMinimized, Fields.Elpis_StartMinimized);
-                _c.SetValue(ConfigItems.Elpis_StartupLocation, Fields.Elpis_StartupLocation.ToString());
-                _c.SetValue(ConfigItems.Elpis_StartupSize, Fields.Elpis_StartupSize.ToString());
+                _c.SetValue(ConfigItems.Elpis_StartupLocation, Fields.Elpis_StartupLocation.ToString().Replace(';', ','));
+                _c.SetValue(ConfigItems.Elpis_StartupSize, Fields.Elpis_StartupSize.ToString().Replace(';', ','));
                 _c.SetValue(ConfigItems.Elpis_Volume, Fields.Elpis_Volume);
 
 
