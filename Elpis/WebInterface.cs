@@ -18,13 +18,13 @@
 */
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Diagnostics;
 using System.Net;
 using Kayak;
 using Kayak.Http;
 using System.Web.Script.Serialization;
+using System.IO;
 
 namespace Elpis
 {
@@ -86,7 +86,10 @@ namespace Elpis
                     { "/dislike",           new DislikeRoute() },
                     { "/currentsong",       new CurrentSongRoute() },
                     { "/albumcover",        new AlbumCoverRoute() },
+                    { "/isplaying",         new IsPlayingRoute() },
                     { "/volume",            new VolumeRoute() },
+                    { "/",                  new IndexRoute() },
+                    { "/assets",            new AssetsRoute() },
                 };
             }
 
@@ -228,6 +231,24 @@ namespace Elpis
         }
     }
 
+    class IsPlayingRoute : IHttpRoute
+    {
+        public BufferedProducer Execute(string query)
+        {
+            var body = "";
+            if (MainWindow._player.Playing)
+            {
+                body = "yes";
+            }
+            else
+            {
+                body = "no";
+            }
+
+            return new BufferedProducer(body);
+        }
+    }
+
     class VolumeRoute : IHttpRoute
     {
         public BufferedProducer Execute(string query)
@@ -246,15 +267,65 @@ namespace Elpis
         }
     }
 
+    class IndexRoute : IHttpRoute
+    {
+        public BufferedProducer Execute(string query)
+        {
+            var file = RCUtils.GetFile("index.html");
+            return new BufferedProducer(file, "text/html; charset=utf-8");
+        }
+    }
+
+    class AssetsRoute : IHttpRoute
+    {
+        public BufferedProducer Execute(string query)
+        {
+            var file = RCUtils.GetFile(query);
+            return new BufferedProducer(file, RCUtils.GetMimeByExtension(query));
+        }
+    }
+
+    internal static class RCUtils
+    {
+        public const string DEFAULT_MIME = "text/plain; charset=utf-8";
+        private static Dictionary<string, string> _mime = new Dictionary<string, string>
+        {
+            { "htm",  "text/html; charset=utf-8" },
+            { "html", "text/html; charset=utf-8" },
+            { "css",  "text/css" },
+            { "js",   "application/javascript" },
+            { "jpg",  "image/jpeg" },
+            { "png",  "image/png" },
+            { "svg",  "image/svg+xml" },
+        };
+
+        public static byte[] GetFile(string path)
+        {
+            var file = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "RemoteControl", path);
+            if (!File.Exists(file))
+                throw new Exception($"File '{path}' not found.");
+            return File.ReadAllBytes(file);
+        }
+
+        public static string GetMimeByExtension(string path)
+        {
+            var ext = Path.GetExtension(path).Substring(1).ToLower();
+            string mime = DEFAULT_MIME;
+            _mime.TryGetValue(ext, out mime);
+
+            return mime;
+        }
+    }
+
     class BufferedProducer : IDataProducer
     {
         ArraySegment<byte> data;
         string mime;
 
-        public BufferedProducer(string data, string mime = "text/plain") : this(data, Encoding.UTF8, mime) { }
-        public BufferedProducer(string data, Encoding encoding, string mime = "text/plain") : this(encoding.GetBytes(data), mime) { }
-        public BufferedProducer(byte[] data, string mime = "text/plain") : this(new ArraySegment<byte>(data), mime) { }
-        public BufferedProducer(ArraySegment<byte> data, string mime = "text/plain")
+        public BufferedProducer(string data, string mime = RCUtils.DEFAULT_MIME) : this(data, Encoding.UTF8, mime) { }
+        public BufferedProducer(string data, Encoding encoding, string mime = RCUtils.DEFAULT_MIME) : this(encoding.GetBytes(data), mime) { }
+        public BufferedProducer(byte[] data, string mime = RCUtils.DEFAULT_MIME) : this(new ArraySegment<byte>(data), mime) { }
+        public BufferedProducer(ArraySegment<byte> data, string mime = RCUtils.DEFAULT_MIME)
         {
             this.data = data;
             this.mime = mime;
@@ -270,51 +341,5 @@ namespace Elpis
 
         public int Size => data.Count;
         public string MimeType => mime;
-    }
-
-    class BufferedConsumer : IDataConsumer
-    {
-        List<ArraySegment<byte>> buffer = new List<ArraySegment<byte>>();
-        Action<string> resultCallback;
-        Action<Exception> errorCallback;
-
-        public BufferedConsumer(Action<string> resultCallback, Action<Exception> errorCallback)
-        {
-            this.resultCallback = resultCallback;
-            this.errorCallback = errorCallback;
-        }
-
-        public bool OnData(ArraySegment<byte> data, Action continuation)
-        {
-            // since we're just buffering, ignore the continuation.
-            // TODO: place an upper limit on the size of the buffer.
-            // don't want a client to take up all the RAM on our server!
-            buffer.Add(data);
-            return false;
-        }
-
-        public void OnError(Exception error)
-        {
-            errorCallback(error);
-        }
-
-        public void OnEnd()
-        {
-            // turn the buffer into a string.
-            //
-            // (if this isn't what you want, you could skip
-            // this step and make the result callback accept
-            // List<ArraySegment<byte>> or whatever)
-            //
-            var str = "";
-            if (buffer.Count > 0)
-            {
-                str = buffer
-                .Select(b => Encoding.UTF8.GetString(b.Array, b.Offset, b.Count))
-                .Aggregate((result, next) => result + next);
-            }
-
-            resultCallback(str);
-        }
     }
 }
