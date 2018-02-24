@@ -1540,6 +1540,9 @@ namespace Elpis
         {
             if (!_forceClose && _config.Fields.Elpis_MinimizeToTray && !_restarting)
             {
+                _config.Fields.Elpis_StartupLocation = new Point(Left, Top);
+                _config.Fields.Elpis_StartupSize = new Size(Width, Height);
+
                 WindowState = WindowState.Minimized;
                 this.Hide();
                 ShowInTaskbar = false;
@@ -1556,8 +1559,11 @@ namespace Elpis
 
             if (_config != null)
             {
-                _config.Fields.Elpis_StartupLocation = new Point(this.Left, this.Top);
-                _config.Fields.Elpis_StartupSize = new Size(this.Width, this.Height);
+                if (ShowInTaskbar) // only get location and size if window not minimized
+                {
+                    _config.Fields.Elpis_StartupLocation = new Point(Left, Top);
+                    _config.Fields.Elpis_StartupSize = new Size(Width, Height);
+                }
                 if(_player != null)
                     _config.Fields.Elpis_Volume = _player.Volume;
                 _config.SaveConfig();
