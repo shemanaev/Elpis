@@ -24,7 +24,6 @@ using System.Diagnostics;
 using System.Net;
 using Kayak;
 using Kayak.Http;
-using PandoraSharp;
 using System.Web.Script.Serialization;
 
 namespace Elpis
@@ -32,6 +31,7 @@ namespace Elpis
     class WebInterface
     {
         private IScheduler _scheduler;
+
         public void StartInterface()
         {
 #if DEBUG
@@ -54,6 +54,7 @@ namespace Elpis
         {
             _scheduler.Stop();
         }
+
         class SchedulerDelegate : ISchedulerDelegate
         {
             public void OnException(IScheduler scheduler, Exception e)
@@ -70,253 +71,250 @@ namespace Elpis
 
         class RequestDelegate : IHttpRequestDelegate
         {
+            private Dictionary<string, IHttpRoute> _routes;
+
+            public RequestDelegate()
+            {
+                _routes = new Dictionary<string, IHttpRoute>
+                {
+                    { "/connect",           new ConnectRoute() },
+                    { "/next",              new NextRoute() },
+                    { "/play",              new PlayRoute() },
+                    { "/pause",             new PauseRoute() },
+                    { "/toggleplaypause",   new TogglePlayPauseRoute() },
+                    { "/like",              new LikeRoute() },
+                    { "/dislike",           new DislikeRoute() },
+                    { "/currentsong",       new CurrentSongRoute() },
+                    { "/albumcover",        new AlbumCoverRoute() },
+                    { "/volume",            new VolumeRoute() },
+                };
+            }
+
             public void OnRequest(HttpRequestHead request, IDataProducer requestBody, IHttpResponseDelegate response)
             {
-                if (request.Method.ToUpperInvariant() == "GET" && request.Uri.StartsWith("/next"))
+                var status = "404 Not Found";
+                var body = new BufferedProducer($"The resource you requested ('{request.Uri}') could not be found.");
+
+                try
                 {
-                    // when you subscribe to the request body before calling OnResponse,
-                    // the server will automatically send 100-continue if the client is
-                    // expecting it.
-                    bool ret = MainWindow.Next();
-
-                    var body = ret ? "Successfully skipped." : "You have to wait for 20 seconds to skip again.";
-
-                    var headers = new HttpResponseHead()
+                    foreach (var route in _routes)
                     {
-                        Status = "200 OK",
-                        Headers = new Dictionary<string, string>()
-                    {
-                        { "Content-Type", "text/plain" },
-                        { "Content-Length", body.Length.ToString() },
+                        if (request.Path == route.Key)
+                        {
+                            body = route.Value.Execute(request.QueryString);
+                            status = "200 OK";
+                            break;
+                        }
                     }
-                    };
-                    response.OnResponse(headers, new BufferedProducer(body));
                 }
-                else if (request.Method.ToUpperInvariant() == "GET" && request.Uri.StartsWith("/pause"))
+                catch (Exception e)
                 {
-                    MainWindow.Pause();
-                    var body = "Paused.";
-
-                    var headers = new HttpResponseHead()
-                    {
-                        Status = "200 OK",
-                        Headers = new Dictionary<string, string>()
-                    {
-                        { "Content-Type", "text/plain" },
-                        { "Content-Length", body.Length.ToString() },
-                    }
-                    };
-                    response.OnResponse(headers, new BufferedProducer(body));
+                    status = "500 Internal Server Error";
+                    var responseBody = $"The resource you requested ('{request.Uri}') produced an error: {e.Message}";
+                    body = new BufferedProducer(responseBody);
                 }
-                else if (request.Method.ToUpperInvariant() == "GET" && request.Uri.StartsWith("/play"))
+
+                var headers = new HttpResponseHead()
                 {
-                    MainWindow.Play();
-                    var body = "Playing.";
-
-                    var headers = new HttpResponseHead()
+                    Status = status,
+                    Headers = new Dictionary<string, string>()
                     {
-                        Status = "200 OK",
-                        Headers = new Dictionary<string, string>()
-                    {
-                        { "Content-Type", "text/plain" },
-                        { "Content-Length", body.Length.ToString() },
+                        { "Content-Type", body.MimeType },
+                        { "Content-Length", body.Size.ToString() },
                     }
-                    };
-                    response.OnResponse(headers, new BufferedProducer(body));
-                }
-                else if (request.Method.ToUpperInvariant() == "GET" && request.Uri.StartsWith("/toggleplaypause"))
-                {
-                    var body = "";
-                    if (MainWindow._player.Playing)
-                    {
-                        body = "Paused.";
-                    }
-                    else
-                    {
-                        body = "Playing.";
-                    }
-                    MainWindow.PlayPauseToggle();
-
-                    var headers = new HttpResponseHead()
-                    {
-                        Status = "200 OK",
-                        Headers = new Dictionary<string, string>()
-                    {
-                        { "Content-Type", "text/plain" },
-                        { "Content-Length", body.Length.ToString() },
-                    }
-                    };
-                    response.OnResponse(headers, new BufferedProducer(body));
-                }
-                else if (request.Method.ToUpperInvariant() == "GET" && request.Uri.StartsWith("/like"))
-                {
-                    MainWindow.Like();
-                    var body = "Like";
-                    if (MainWindow.GetCurrentSong().Loved)
-                        body = "Liked";
-
-                    var headers = new HttpResponseHead()
-                    {
-                        Status = "200 OK",
-                        Headers = new Dictionary<string, string>()
-                    {
-                        { "Content-Type", "text/plain" },
-                        { "Content-Length", body.Length.ToString() },
-                    }
-                    };
-                    response.OnResponse(headers, new BufferedProducer(body));
-                }
-                else if (request.Method.ToUpperInvariant() == "GET" && request.Uri.StartsWith("/dislike"))
-                {
-                    MainWindow.Dislike();
-                    var body = "Disliked.";
-
-                    var headers = new HttpResponseHead()
-                    {
-                        Status = "200 OK",
-                        Headers = new Dictionary<string, string>()
-                    {
-                        { "Content-Type", "text/plain" },
-                        { "Content-Length", body.Length.ToString() },
-                    }
-                    };
-                    response.OnResponse(headers, new BufferedProducer(body));
-                }
-                else if (request.Method.ToUpperInvariant() == "GET" && request.Uri.StartsWith("/currentsong"))
-                {
-                    Song s = MainWindow.GetCurrentSong();
-                    var body = new JavaScriptSerializer().Serialize(s);
-
-                    var headers = new HttpResponseHead()
-                    {
-                        Status = "200 OK",
-                        Headers = new Dictionary<string, string>()
-                    {
-                        { "Content-Type", "text/plain" },
-                        { "Content-Length", body.Length.ToString() },
-                    }
-                    };
-                    response.OnResponse(headers, new BufferedProducer(body));
-                }
-                else if (request.Method.ToUpperInvariant() == "GET" && request.Uri.StartsWith("/connect"))
-                {
-                    var body = "true";
-
-                    var headers = new HttpResponseHead()
-                    {
-                        Status = "200 OK",
-                        Headers = new Dictionary<string, string>()
-                    {
-                        { "Content-Type", "text/plain" },
-                        { "Content-Length", body.Length.ToString() },
-                    }
-                    };
-                    response.OnResponse(headers, new BufferedProducer(body));
-                }
-                else if (request.Uri.StartsWith("/"))
-                {
-                    var body = string.Format(
-                        "Hello world.\r\nHello.\r\n\r\nUri: {0}\r\nPath: {1}\r\nQuery:{2}\r\nFragment: {3}\r\n",
-                        request.Uri,
-                        request.Path,
-                        request.QueryString,
-                        request.Fragment);
-
-                    var headers = new HttpResponseHead()
-                    {
-                        Status = "200 OK",
-                        Headers = new Dictionary<string, string>()
-                    {
-                        { "Content-Type", "text/plain" },
-                        { "Content-Length", body.Length.ToString() },
-                    }
-                    };
-                    response.OnResponse(headers, new BufferedProducer(body));
-                }
-                else
-                {
-                    var responseBody = "The resource you requested ('" + request.Uri + "') could not be found.";
-                    var headers = new HttpResponseHead()
-                    {
-                        Status = "404 Not Found",
-                        Headers = new Dictionary<string, string>()
-                    {
-                        { "Content-Type", "text/plain" },
-                        { "Content-Length", responseBody.Length.ToString() }
-                    }
-                    };
-                    var body = new BufferedProducer(responseBody);
-
-                    response.OnResponse(headers, body);
-                }
+                };
+                response.OnResponse(headers, body);
             }
         }
+    }
 
-        class BufferedProducer : IDataProducer
+    interface IHttpRoute
+    {
+        BufferedProducer Execute(string query);
+    }
+
+    class ConnectRoute : IHttpRoute
+    {
+        public BufferedProducer Execute(string query)
         {
-            ArraySegment<byte> data;
+            return new BufferedProducer("true");
+        }
+    }
 
-            public BufferedProducer(string data) : this(data, Encoding.UTF8) { }
-            public BufferedProducer(string data, Encoding encoding) : this(encoding.GetBytes(data)) { }
-            public BufferedProducer(byte[] data) : this(new ArraySegment<byte>(data)) { }
-            public BufferedProducer(ArraySegment<byte> data)
+    class NextRoute : IHttpRoute
+    {
+        public BufferedProducer Execute(string query)
+        {
+            bool ret = MainWindow.Next();
+            var body = ret ? "Successfully skipped." : "You have to wait for 20 seconds to skip again.";
+            return new BufferedProducer(body);
+        }
+    }
+
+    class PlayRoute : IHttpRoute
+    {
+        public BufferedProducer Execute(string query)
+        {
+            MainWindow.Play();
+            return new BufferedProducer("Playing.");
+        }
+    }
+
+    class PauseRoute : IHttpRoute
+    {
+        public BufferedProducer Execute(string query)
+        {
+            MainWindow.Pause();
+            return new BufferedProducer("Paused.");
+        }
+    }
+
+    class TogglePlayPauseRoute : IHttpRoute
+    {
+        public BufferedProducer Execute(string query)
+        {
+            var body = "";
+            if (MainWindow._player.Playing)
             {
-                this.data = data;
+                body = "Paused.";
+            }
+            else
+            {
+                body = "Playing.";
+            }
+            MainWindow.PlayPauseToggle();
+
+            return new BufferedProducer(body);
+        }
+    }
+
+    class LikeRoute : IHttpRoute
+    {
+        public BufferedProducer Execute(string query)
+        {
+            MainWindow.Like();
+            var body = "Like";
+            if (MainWindow.GetCurrentSong().Loved)
+                body = "Liked";
+            return new BufferedProducer(body);
+        }
+    }
+
+    class DislikeRoute : IHttpRoute
+    {
+        public BufferedProducer Execute(string query)
+        {
+            MainWindow.Dislike();
+            return new BufferedProducer("Disliked.");
+        }
+    }
+
+    class CurrentSongRoute : IHttpRoute
+    {
+        public BufferedProducer Execute(string query)
+        {
+            var s = MainWindow.GetCurrentSong();
+            var body = new JavaScriptSerializer().Serialize(s);
+            return new BufferedProducer(body, "application/json");
+        }
+    }
+
+    class AlbumCoverRoute : IHttpRoute
+    {
+        public BufferedProducer Execute(string query)
+        {
+            var s = MainWindow.GetCurrentSong();
+            return new BufferedProducer(s.AlbumImage, "image/jpeg");
+        }
+    }
+
+    class VolumeRoute : IHttpRoute
+    {
+        public BufferedProducer Execute(string query)
+        {
+            int volume = MainWindow.GetVolume();
+            if (!string.IsNullOrEmpty(query))
+            {
+                int.TryParse(query, out volume);
+                if (volume != MainWindow.GetVolume())
+                {
+                    MainWindow.SetVolume(volume);
+                }
             }
 
-            public IDisposable Connect(IDataConsumer channel)
-            {
-                // null continuation, consumer must swallow the data immediately.
-                channel.OnData(data, null);
-                channel.OnEnd();
-                return null;
-            }
+            return new BufferedProducer(volume.ToString());
+        }
+    }
+
+    class BufferedProducer : IDataProducer
+    {
+        ArraySegment<byte> data;
+        string mime;
+
+        public BufferedProducer(string data, string mime = "text/plain") : this(data, Encoding.UTF8, mime) { }
+        public BufferedProducer(string data, Encoding encoding, string mime = "text/plain") : this(encoding.GetBytes(data), mime) { }
+        public BufferedProducer(byte[] data, string mime = "text/plain") : this(new ArraySegment<byte>(data), mime) { }
+        public BufferedProducer(ArraySegment<byte> data, string mime = "text/plain")
+        {
+            this.data = data;
+            this.mime = mime;
         }
 
-        class BufferedConsumer : IDataConsumer
+        public IDisposable Connect(IDataConsumer channel)
         {
-            List<ArraySegment<byte>> buffer = new List<ArraySegment<byte>>();
-            Action<string> resultCallback;
-            Action<Exception> errorCallback;
+            // null continuation, consumer must swallow the data immediately.
+            channel.OnData(data, null);
+            channel.OnEnd();
+            return null;
+        }
 
-            public BufferedConsumer(Action<string> resultCallback,
-        Action<Exception> errorCallback)
+        public int Size => data.Count;
+        public string MimeType => mime;
+    }
+
+    class BufferedConsumer : IDataConsumer
+    {
+        List<ArraySegment<byte>> buffer = new List<ArraySegment<byte>>();
+        Action<string> resultCallback;
+        Action<Exception> errorCallback;
+
+        public BufferedConsumer(Action<string> resultCallback, Action<Exception> errorCallback)
+        {
+            this.resultCallback = resultCallback;
+            this.errorCallback = errorCallback;
+        }
+
+        public bool OnData(ArraySegment<byte> data, Action continuation)
+        {
+            // since we're just buffering, ignore the continuation.
+            // TODO: place an upper limit on the size of the buffer.
+            // don't want a client to take up all the RAM on our server!
+            buffer.Add(data);
+            return false;
+        }
+
+        public void OnError(Exception error)
+        {
+            errorCallback(error);
+        }
+
+        public void OnEnd()
+        {
+            // turn the buffer into a string.
+            //
+            // (if this isn't what you want, you could skip
+            // this step and make the result callback accept
+            // List<ArraySegment<byte>> or whatever)
+            //
+            var str = "";
+            if (buffer.Count > 0)
             {
-                this.resultCallback = resultCallback;
-                this.errorCallback = errorCallback;
-            }
-            public bool OnData(ArraySegment<byte> data, Action continuation)
-            {
-                // since we're just buffering, ignore the continuation.
-                // TODO: place an upper limit on the size of the buffer.
-                // don't want a client to take up all the RAM on our server!
-                buffer.Add(data);
-                return false;
-            }
-            public void OnError(Exception error)
-            {
-                errorCallback(error);
+                str = buffer
+                .Select(b => Encoding.UTF8.GetString(b.Array, b.Offset, b.Count))
+                .Aggregate((result, next) => result + next);
             }
 
-            public void OnEnd()
-            {
-                // turn the buffer into a string.
-                //
-                // (if this isn't what you want, you could skip
-                // this step and make the result callback accept
-                // List<ArraySegment<byte>> or whatever)
-                //
-                var str = "";
-                if (buffer.Count > 0)
-                {
-                    str = buffer
-                    .Select(b => Encoding.UTF8.GetString(b.Array, b.Offset, b.Count))
-                    .Aggregate((result, next) => result + next);
-                }
-
-
-                resultCallback(str);
-            }
+            resultCallback(str);
         }
     }
 }

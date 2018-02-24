@@ -982,6 +982,7 @@ namespace Elpis
             }));
 
         }
+
         public static void Dislike()
         {
             System.Windows.Application.Current.Dispatcher.Invoke((Action)(() =>
@@ -990,10 +991,28 @@ namespace Elpis
                 _playlistPage.ThumbDownCurrent();
             }));
         }
+
         public static Song GetCurrentSong()
         {
             return _player.CurrentSong;
         }
+
+        public static int GetVolume()
+        {
+            return _player.Volume;
+        }
+
+        public static void SetVolume(int volume)
+        {
+            if (volume < 0) volume = 0;
+            if (volume > 100) volume = 100;
+
+            System.Windows.Application.Current.Dispatcher.Invoke((Action)(() =>
+            {
+                _mainWindow.mainBar.Volume = volume;
+            }));
+        }
+
         private void LoadLastFM()
         {
             string apiKey = string.Empty;
