@@ -667,6 +667,7 @@ namespace Elpis
 
             _notifyMenu = new ContextMenuStrip();
             _notifyMenu.Items.AddRange(menus);
+            _notifyMenu.Renderer = new ToolStripProfessionalRenderer(new MyColorTable());
 
             _notify = new NotifyIcon()
                           {
