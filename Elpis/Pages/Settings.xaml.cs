@@ -30,8 +30,6 @@ using TextBox = System.Windows.Controls.TextBox;
 using UserControl = System.Windows.Controls.UserControl;
 using System.Net.Sockets;
 using System.Net;
-using System.Linq;
-using System.ComponentModel;
 using PandoraSharp;
 
 namespace Elpis
@@ -67,7 +65,7 @@ namespace Elpis
             _config = config;
             _player = player;
             _keyHost = keyHost;
-            HotKeyItems.SetBinding(ItemsControl.ItemsSourceProperty, new Binding("HotKeys") {Source = _keyHost, NotifyOnSourceUpdated=true, Mode=BindingMode.OneWay });
+            HotKeyItems.SetBinding(ItemsControl.ItemsSourceProperty, new Binding("HotKeys") { Source = _keyHost, NotifyOnSourceUpdated = true, Mode = BindingMode.OneWay });
         }
 
         public event CloseEvent Close;
@@ -131,8 +129,10 @@ namespace Elpis
                 try
                 {
                     IPHostEntry host = Dns.GetHostEntry(Dns.GetHostName());
-                    foreach (IPAddress ip in host.AddressList) {
-                        if (!(ip.IsIPv6LinkLocal || ip.IsIPv6Multicast || ip.IsIPv6SiteLocal || ip.IsIPv6Teredo)) {
+                    foreach (IPAddress ip in host.AddressList)
+                    {
+                        if (!(ip.IsIPv6LinkLocal || ip.IsIPv6Multicast || ip.IsIPv6SiteLocal || ip.IsIPv6Teredo))
+                        {
                             ips.Add(ip.ToString());
                         }
                     }
@@ -147,19 +147,19 @@ namespace Elpis
 
         private void SaveConfig()
         {
-            _config.Fields.Login_AutoLogin = (bool) chkAutoLogin.IsChecked;
-            _config.Fields.Elpis_StartMinimized = (bool) chkStartMinimized.IsChecked;
-            _config.Fields.Pandora_AudioFormat = (string) cmbAudioFormat.SelectedValue;
-            _config.Fields.Pandora_StationSortOrder = (string) cmbStationSort.SelectedValue;
+            _config.Fields.Login_AutoLogin = (bool)chkAutoLogin.IsChecked;
+            _config.Fields.Elpis_StartMinimized = (bool)chkStartMinimized.IsChecked;
+            _config.Fields.Pandora_AudioFormat = (string)cmbAudioFormat.SelectedValue;
+            _config.Fields.Pandora_StationSortOrder = (string)cmbStationSort.SelectedValue;
             if (!_config.Fields.Pandora_AutoPlay &&
-                (bool) chkAutoPlay.IsChecked && _player.CurrentStation != null)
+                (bool)chkAutoPlay.IsChecked && _player.CurrentStation != null)
                 _config.Fields.Pandora_LastStationID = _player.CurrentStation.ID;
-            _config.Fields.Pandora_AutoPlay = (bool) chkAutoPlay.IsChecked;
-            _config.Fields.Elpis_CheckUpdates = (bool) chkCheckUpdates.IsChecked;
+            _config.Fields.Pandora_AutoPlay = (bool)chkAutoPlay.IsChecked;
+            _config.Fields.Elpis_CheckUpdates = (bool)chkCheckUpdates.IsChecked;
             _config.Fields.Elpis_CheckBetaUpdates = (bool)chkCheckBetaUpdates.IsChecked;
             _config.Fields.Elpis_RemoteControlEnabled = (bool)chkRemoteControlEnabled.IsChecked;
-            _config.Fields.Elpis_MinimizeToTray = (bool) chkTrayMinimize.IsChecked;
-            _config.Fields.Elpis_ShowTrayNotifications = (bool) chkShowNotify.IsChecked;
+            _config.Fields.Elpis_MinimizeToTray = (bool)chkTrayMinimize.IsChecked;
+            _config.Fields.Elpis_ShowTrayNotifications = (bool)chkShowNotify.IsChecked;
             _player.PauseOnLock = _config.Fields.Elpis_PauseOnLock = (bool)chkPauseOnLock.IsChecked;
 
             _player.AudioFormat = _config.Fields.Pandora_AudioFormat;
@@ -180,9 +180,9 @@ namespace Elpis
 
             _config.Fields.LastFM_Scrobble = (bool)chkEnableScrobbler.IsChecked;
             Dictionary<int, HotkeyConfig> keys = new Dictionary<int, HotkeyConfig>();
-            foreach (KeyValuePair<int,HotKey> pair in _keyHost.HotKeys)
+            foreach (KeyValuePair<int, HotKey> pair in _keyHost.HotKeys)
             {
-                keys.Add(pair.Key,new HotkeyConfig(pair.Value));
+                keys.Add(pair.Key, new HotkeyConfig(pair.Value));
             }
             _config.Fields.Elpis_HotKeys = keys;
 
@@ -217,13 +217,11 @@ namespace Elpis
 
             if (restart)
             {
-                if (Restart != null)
-                    Restart();
+                Restart?.Invoke();
             }
             else
             {
-                if (Close != null)
-                    Close();
+                Close?.Invoke();
             }
         }
 
@@ -234,8 +232,7 @@ namespace Elpis
 
             SaveConfig();
 
-            if (Logout != null)
-                Logout();
+            Logout?.Invoke();
         }
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
@@ -250,8 +247,7 @@ namespace Elpis
 
         private void btnCancel_Click(object sender, RoutedEventArgs e)
         {
-            if (Close != null)
-                Close();
+            Close?.Invoke();
         }
 
         private void txtProxyPort_PreviewTextInput(object sender, System.Windows.Input.TextCompositionEventArgs e)
@@ -291,14 +287,12 @@ namespace Elpis
 
         private void btnLastFMAuth_Click(object sender, RoutedEventArgs e)
         {
-            if (LastFMAuthRequest != null)
-                LastFMAuthRequest();
+            LastFMAuthRequest?.Invoke();
         }
 
         private void btnLastFMDisable_Click(object sender, RoutedEventArgs e)
         {
-            if (LasFMDeAuthRequest != null)
-                LasFMDeAuthRequest();
+            LasFMDeAuthRequest?.Invoke();
 
             chkEnableScrobbler.IsChecked = false;
             UpdateLastFMControlState();
@@ -306,7 +300,7 @@ namespace Elpis
 
         private void btnAddHotKey_Click(object sender, RoutedEventArgs e)
         {
-            _keyHost.AddHotKey(new HotKey(PlayerCommands.PlayPause,Key.None,ModifierKeys.None));
+            _keyHost.AddHotKey(new HotKey(PlayerCommands.PlayPause, Key.None, ModifierKeys.None));
         }
 
         //private void btnDelHotkey_Click(object sender, RoutedEventArgs e)
@@ -338,16 +332,16 @@ namespace Elpis
         {
             TextProperty.OverrideMetadata(typeof(HotKeyBox),
                                                   new FrameworkPropertyMetadata()
-                                                      {
-                                                          BindsTwoWayByDefault = false,
-                                                          Journal = true,
-                                                          DefaultUpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
-                                                      });
+                                                  {
+                                                      BindsTwoWayByDefault = false,
+                                                      Journal = true,
+                                                      DefaultUpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
+                                                  });
         }
         protected override void OnPreviewKeyDown(KeyEventArgs e)
         {
             base.OnPreviewKeyDown(e);
-            KeyValuePair<int, HotKey> pair = (KeyValuePair<int, HotKey>) DataContext;
+            KeyValuePair<int, HotKey> pair = (KeyValuePair<int, HotKey>)DataContext;
             HotKey h = pair.Value;
             switch (e.Key)
             {
