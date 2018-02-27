@@ -1,5 +1,6 @@
 ﻿using DNS.Client;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading;
@@ -13,22 +14,17 @@ namespace PandoraSharp
         private static string _userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36";
 
         private static string _dns;
-        private static DnsClient _dnsClient;
+        private static Dictionary<string, string> _dnsCache = new Dictionary<string, string>();
         public static string Dns
         {
             get { return _dns; }
             set
             {
                 if (IPAddress.TryParse(value, out IPAddress ip))
-                {
                     _dns = value;
-                    _dnsClient = new DnsClient(_dns);
-                }
                 else
-                {
                     _dns = string.Empty;
-                    _dnsClient = null;
-                }
+                _dnsCache.Clear();
             }
         }
 
@@ -67,13 +63,19 @@ namespace PandoraSharp
 
             var uri = new Uri(url);
 
-            if (_dnsClient != null)
+            if (!string.IsNullOrEmpty(_dns))
             {
-                var resolved = _dnsClient.Lookup(uri.Host);
-                resolved.Wait();
-                var ip = resolved.Result.FirstOrDefault().ToString();
-                wc.Headers.Add("Host", uri.Host);
-                uri = uri.ReplaceHost(ip);
+                var host = uri.Host;
+                if (!_dnsCache.ContainsKey(host))
+                {
+                    var dns = new DnsClient(_dns);
+                    var resolved = dns.Lookup(host);
+                    resolved.Wait();
+                    _dnsCache[host] = resolved.Result.FirstOrDefault().ToString();
+                }
+
+                uri = uri.ReplaceHost(_dnsCache[host]);
+                wc.Headers.Add("Host", host);
             }
 
             string response = string.Empty;
@@ -101,13 +103,19 @@ namespace PandoraSharp
 
             var uri = new Uri(url);
 
-            if (_dnsClient != null)
+            if (!string.IsNullOrEmpty(_dns))
             {
-                var resolved = _dnsClient.Lookup(uri.Host);
-                resolved.Wait();
-                var ip = resolved.Result.FirstOrDefault().ToString();
-                wc.Headers.Add("Host", uri.Host);
-                uri = uri.ReplaceHost(ip);
+                var host = uri.Host;
+                if (!_dnsCache.ContainsKey(host))
+                {
+                    var dns = new DnsClient(_dns);
+                    var resolved = dns.Lookup(host);
+                    resolved.Wait();
+                    _dnsCache[host] = resolved.Result.FirstOrDefault().ToString();
+                }
+
+                uri = uri.ReplaceHost(_dnsCache[host]);
+                wc.Headers.Add("Host", host);
             }
 
             return wc.DownloadData(uri);
