@@ -236,7 +236,7 @@ namespace PandoraSharpPlayer
 
         public void SetProxy(string address, int port, string user = "", string password = "")
         {
-            PRequest.SetProxy(address, port, user, password);
+            HttpClient.SetProxy(address, port, user, password);
             if (_bass != null)
                 _bass.SetProxy(address, port, user, password);
         }

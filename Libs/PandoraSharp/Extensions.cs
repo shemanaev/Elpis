@@ -31,6 +31,18 @@ namespace PandoraSharp
         }
     }
 
+    public static class UriExtensions
+    {
+        public static Uri ReplaceHost(this Uri uri, string host)
+        {
+            var builder = new UriBuilder(uri)
+            {
+                Host = host
+            };
+            return builder.Uri;
+        }
+    }
+
     public static class StringExtensions
     {
         private static readonly Dictionary<char, string> encChars =

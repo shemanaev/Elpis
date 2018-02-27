@@ -103,6 +103,8 @@ namespace Elpis
         public static MapConfigEntry Proxy_User = new MapConfigEntry("Proxy_User", "");
         public static MapConfigEntry Proxy_Password = new MapConfigEntry("Proxy_Password", "");
 
+        public static MapConfigEntry Dns_Server = new MapConfigEntry("Dns_Server", "");
+
         public static MapConfigEntry Elpis_Version = new MapConfigEntry("Elpis_Version", (new Version()).ToString());
         public static MapConfigEntry Elpis_InstallID = new MapConfigEntry("Elpis_InstallID", Guid.NewGuid().ToString());
         public static MapConfigEntry Elpis_CheckUpdates = new MapConfigEntry("Elpis_CheckUpdates", true);
@@ -151,6 +153,8 @@ namespace Elpis
         public int Proxy_Port { get; set; }
         public string Proxy_User { get; set; }
         public string Proxy_Password { get; set; }
+
+        public string Dns_Server { get; set; }
 
         public Version Elpis_Version { get; internal set; }
         public string Elpis_InstallID { get; internal set; }
@@ -244,6 +248,8 @@ namespace Elpis
             Fields.Proxy_User = (string)_c.GetValue(ConfigItems.Proxy_User);
             Fields.Proxy_Password = _c.GetEncryptedString(ConfigItems.Proxy_Password);
 
+            Fields.Dns_Server = (string)_c.GetValue(ConfigItems.Dns_Server);
+
             var verStr = (string)_c.GetValue(ConfigItems.Elpis_Version);
             Version ver;
             if (Version.TryParse(verStr, out ver))
@@ -331,6 +337,8 @@ namespace Elpis
                 _c.SetValue(ConfigItems.Proxy_Port, Fields.Proxy_Port);
                 _c.SetValue(ConfigItems.Proxy_User, Fields.Proxy_User.Trim());
                 _c.SetEncryptedString(ConfigItems.Proxy_Password, Fields.Proxy_Password.Trim());
+
+                _c.SetValue(ConfigItems.Dns_Server, Fields.Dns_Server.Trim());
 
                 _c.SetValue(ConfigItems.Elpis_Version, Fields.Elpis_Version.ToString());
                 _c.SetValue(ConfigItems.Elpis_CheckUpdates, Fields.Elpis_CheckUpdates);

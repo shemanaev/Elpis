@@ -199,8 +199,15 @@ namespace Elpis
             else
             {
                 if (_config.Fields.Proxy_Address != string.Empty)
+                {
                     PRequest.SetProxy(_config.Fields.Proxy_Address, _config.Fields.Proxy_Port,
                         _config.Fields.Proxy_User, _config.Fields.Proxy_Password);
+                    HttpClient.SetProxy(_config.Fields.Proxy_Address, _config.Fields.Proxy_Port,
+                        _config.Fields.Proxy_User, _config.Fields.Proxy_Password);
+                }
+
+                if (!string.IsNullOrEmpty(_config.Fields.Dns_Server))
+                    HttpClient.Dns = _config.Fields.Dns_Server;
 
                 var loc = _config.Fields.Elpis_StartupLocation;
                 var size = _config.Fields.Elpis_StartupSize;

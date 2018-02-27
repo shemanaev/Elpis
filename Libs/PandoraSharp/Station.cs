@@ -91,7 +91,7 @@ namespace PandoraSharp
                     {
                         try
                         {
-                            ArtImage = PRequest.ByteRequest(ArtUrl);
+                            ArtImage = HttpClient.ByteRequest(ArtUrl);
                             if (ArtImage.Length > 0)
                                 File.WriteAllBytes(ArtCacheFile, ArtImage);
                         }

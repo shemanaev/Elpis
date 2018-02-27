@@ -278,6 +278,26 @@
                                     Name="txtProxyPassword"/>
                     </Grid>
                 </Expander>
+                <Expander Header="DNS Resolver"
+                          IsExpanded="False"
+                          Margin="5, 20">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Label Grid.Row="0" Grid.Column="0" Content="DNS" FontSize="16" />
+                        <TextBox Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="3"
+                                 Text=""
+                            FontSize="16"
+                            TextAlignment="Center" Margin="3"
+                            Name="txtDnsServer"/>
+                    </Grid>
+                </Expander>
                 <Expander Header="Last.FM Scrobbler"  IsExpanded="False" Margin="5, 20" >
                     <Grid>
                         <Grid.ColumnDefinitions>

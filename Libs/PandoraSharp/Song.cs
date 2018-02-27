@@ -123,7 +123,7 @@ namespace PandoraSharp
             {
                 try
                 {
-                    AlbumImage = PRequest.ByteRequest(AlbumArtUrl);
+                    AlbumImage = HttpClient.ByteRequest(AlbumArtUrl);
                 }
                 catch { }
             }

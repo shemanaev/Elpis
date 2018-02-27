@@ -188,7 +188,7 @@ namespace PandoraSharp
         {
             try
             {
-                return PRequest.StringRequest(url, data);
+                return HttpClient.StringRequest(url, data);
             }
             catch (Exception e)
             {

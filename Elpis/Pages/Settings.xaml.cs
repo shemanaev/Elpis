@@ -32,6 +32,7 @@ using System.Net.Sockets;
 using System.Net;
 using System.Linq;
 using System.ComponentModel;
+using PandoraSharp;
 
 namespace Elpis
 {
@@ -103,6 +104,8 @@ namespace Elpis
             txtProxyUser.Text = _config.Fields.Proxy_User;
             txtProxyPassword.Password = _config.Fields.Proxy_Password;
 
+            txtDnsServer.Text = _config.Fields.Dns_Server;
+
             chkEnableScrobbler.IsChecked = _config.Fields.LastFM_Scrobble;
 
             txtIPAddress.ItemsSource = getLocalIPAddresses();
@@ -173,6 +176,8 @@ namespace Elpis
             _config.Fields.Proxy_User = txtProxyUser.Text;
             _config.Fields.Proxy_Password = txtProxyPassword.Password;
 
+            _config.Fields.Dns_Server = txtDnsServer.Text;
+
             _config.Fields.LastFM_Scrobble = (bool)chkEnableScrobbler.IsChecked;
             Dictionary<int, HotkeyConfig> keys = new Dictionary<int, HotkeyConfig>();
             foreach (KeyValuePair<int,HotKey> pair in _keyHost.HotKeys)
@@ -188,6 +193,9 @@ namespace Elpis
             }
 
             _config.SaveConfig();
+
+            if (!string.IsNullOrEmpty(_config.Fields.Dns_Server))
+                HttpClient.Dns = _config.Fields.Dns_Server;
         }
 
         private bool NeedsRestart()
