@@ -25,6 +25,7 @@ using PandoraSharp;
 using Util;
 using System.Windows;
 using System.Windows.Input;
+using Newtonsoft.Json;
 
 namespace Elpis
 {
@@ -79,6 +80,7 @@ namespace Elpis
         }
     }
 
+    #region Old defaults mappings
     public struct ConfigItems
     {
         public static MapConfigEntry Debug_WriteLog = new MapConfigEntry("Debug_WriteLog", false);
@@ -124,9 +126,9 @@ namespace Elpis
 
         public static MapConfigEntry HotKeysList = new MapConfigEntry("HotKeysList", new Dictionary<int, string>());
 
-        //public static MapConfigEntry Misc_ForceSSL = new MapConfigEntry("Misc_ForceSSL", false);
         public static MapConfigEntry System_OutputDevice = new MapConfigEntry("System_OutputDevice", "");
     }
+    #endregion
 
     public struct ConfigDropDownItem
     {
@@ -141,6 +143,7 @@ namespace Elpis
         public bool Debug_Timestamp { get; set; }
 
         public string Login_Email { get; set; }
+        [JsonConverter(typeof(EncryptedStringConverter))]
         public string Login_Password { get; set; }
         public bool Login_AutoLogin { get; set; }
 
@@ -152,12 +155,13 @@ namespace Elpis
         public string Proxy_Address { get; set; }
         public int Proxy_Port { get; set; }
         public string Proxy_User { get; set; }
+        [JsonConverter(typeof(EncryptedStringConverter))]
         public string Proxy_Password { get; set; }
 
         public string Dns_Server { get; set; }
 
-        public Version Elpis_Version { get; internal set; }
-        public string Elpis_InstallID { get; internal set; }
+        public Version Elpis_Version { get; set; }
+        public string Elpis_InstallID { get; set; }
         public bool Elpis_CheckUpdates { get; set; }
         public bool Elpis_CheckBetaUpdates { get; set; }
         public bool Elpis_RemoteControlEnabled { get; set; }
@@ -170,9 +174,8 @@ namespace Elpis
         public int Elpis_MaxHistory { get; set; }
 
         public bool LastFM_Scrobble { get; set; }
+        [JsonConverter(typeof(EncryptedStringConverter))]
         public string LastFM_SessionKey { get; set; }
-
-        //public bool Misc_ForceSSL { get; set; }
 
         public Point Elpis_StartupLocation { get; set; }
         public Size Elpis_StartupSize { get; set; }
@@ -220,6 +223,24 @@ namespace Elpis
 
         public bool LoadConfig()
         {
+            var config = Path.Combine(ElpisAppData, _configFile);
+            try
+            {
+                Fields = JsonConvert.DeserializeObject<ConfigFields>(File.ReadAllText(config),
+                    new HotkeyConfigConverter(), new VersionConverter());
+                return true;
+            }
+            catch (Exception e)
+            {
+                Log.O("Error loading json config: {0}", e);
+            }
+
+            return LoadLeagcyConfig();
+        }
+
+        #region Fallback to read old versions config
+        public bool LoadLeagcyConfig()
+        {
             if (!_c.LoadConfig())
                 return false;
 
@@ -251,8 +272,7 @@ namespace Elpis
             Fields.Dns_Server = (string)_c.GetValue(ConfigItems.Dns_Server);
 
             var verStr = (string)_c.GetValue(ConfigItems.Elpis_Version);
-            Version ver;
-            if (Version.TryParse(verStr, out ver))
+            if (Version.TryParse(verStr, out Version ver))
                 Fields.Elpis_Version = ver;
 
             Fields.Elpis_InstallID = (string)_c.GetValue(ConfigItems.Elpis_InstallID);
@@ -290,9 +310,7 @@ namespace Elpis
                 Fields.Elpis_StartupSize = new Size(0, 0);
             }
 
-            var list = _c.GetValue(ConfigItems.HotKeysList) as Dictionary<int, string>;
-
-            if (list != null)
+            if (_c.GetValue(ConfigItems.HotKeysList) is Dictionary<int, string> list)
             {
                 foreach (KeyValuePair<int, string> pair in list)
                 {
@@ -307,6 +325,7 @@ namespace Elpis
 
             return true;
         }
+        #endregion
 
         public HotkeyConfig GetKeyObject(MapConfigEntry entry)
         {
@@ -315,69 +334,20 @@ namespace Elpis
 
         public bool SaveConfig()
         {
+            var config = Path.Combine(ElpisAppData, _configFile);
+            var serializer = new JsonSerializer();
             try
             {
-                //TODO: These should be commented out later
-
-                _c.SetValue(ConfigItems.Debug_WriteLog, Fields.Debug_WriteLog);
-                _c.SetValue(ConfigItems.Debug_Logpath, Fields.Debug_Logpath);
-                _c.SetValue(ConfigItems.Debug_Timestamp, Fields.Debug_Timestamp);
-                //*********************************************
-
-                _c.SetValue(ConfigItems.Login_Email, Fields.Login_Email);
-                _c.SetEncryptedString(ConfigItems.Login_Password, Fields.Login_Password);
-                _c.SetValue(ConfigItems.Login_AutoLogin, Fields.Login_AutoLogin);
-
-                _c.SetValue(ConfigItems.Pandora_AudioFormat, Fields.Pandora_AudioFormat);
-                _c.SetValue(ConfigItems.Pandora_AutoPlay, Fields.Pandora_AutoPlay);
-                _c.SetValue(ConfigItems.Pandora_LastStationID, Fields.Pandora_LastStationID);
-                _c.SetValue(ConfigItems.Pandora_StationSortOrder, Fields.Pandora_StationSortOrder);
-
-                _c.SetValue(ConfigItems.Proxy_Address, Fields.Proxy_Address.Trim());
-                _c.SetValue(ConfigItems.Proxy_Port, Fields.Proxy_Port);
-                _c.SetValue(ConfigItems.Proxy_User, Fields.Proxy_User.Trim());
-                _c.SetEncryptedString(ConfigItems.Proxy_Password, Fields.Proxy_Password.Trim());
-
-                _c.SetValue(ConfigItems.Dns_Server, Fields.Dns_Server.Trim());
-
-                _c.SetValue(ConfigItems.Elpis_Version, Fields.Elpis_Version.ToString());
-                _c.SetValue(ConfigItems.Elpis_CheckUpdates, Fields.Elpis_CheckUpdates);
-                _c.SetValue(ConfigItems.Elpis_CheckBetaUpdates, Fields.Elpis_CheckBetaUpdates);
-                _c.SetValue(ConfigItems.Elpis_RemoteControlEnabled, Fields.Elpis_RemoteControlEnabled);
-                _c.SetValue(ConfigItems.Elpis_MinimizeToTray, Fields.Elpis_MinimizeToTray);
-                _c.SetValue(ConfigItems.Elpis_ShowTrayNotifications, Fields.Elpis_ShowTrayNotifications);
-                _c.SetValue(ConfigItems.Elpis_PauseOnLock, Fields.Elpis_PauseOnLock);
-                _c.SetValue(ConfigItems.Elpis_MaxHistory, Fields.Elpis_MaxHistory);
-
-                _c.SetValue(ConfigItems.LastFM_Scrobble, Fields.LastFM_Scrobble);
-                _c.SetEncryptedString(ConfigItems.LastFM_SessionKey, Fields.LastFM_SessionKey);
-
-
-                _c.SetValue(ConfigItems.Elpis_StartMinimized, Fields.Elpis_StartMinimized);
-                _c.SetValue(ConfigItems.Elpis_StartupLocation, Fields.Elpis_StartupLocation.ToString().Replace(';', ','));
-                _c.SetValue(ConfigItems.Elpis_StartupSize, Fields.Elpis_StartupSize.ToString().Replace(';', ','));
-                _c.SetValue(ConfigItems.Elpis_Volume, Fields.Elpis_Volume);
-
-
-                Dictionary<int, string> hotkeysFlattened = new Dictionary<int, string>();
-                foreach (KeyValuePair<int, HotkeyConfig> pair in Fields.Elpis_HotKeys)
-                {
-                    hotkeysFlattened.Add(pair.Key, pair.Value.ToString());
-                }
-                _c.SetValue(ConfigItems.HotKeysList, hotkeysFlattened);
-
-                _c.SetValue(ConfigItems.System_OutputDevice, Fields.System_OutputDevice);
+                var json = JsonConvert.SerializeObject(Fields, Formatting.Indented,
+                    new HotkeyConfigConverter(), new VersionConverter());
+                File.WriteAllText(config, json);
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                Log.O("Error saving config: " + ex);
+                Log.O("Error saving json config: {0}", e);
                 return false;
             }
 
-            if (!_c.SaveConfig()) return false;
-
-            Log.O("Config File Contents:");
-            Log.O(_c.LastConfig);
             return true;
         }
     }
