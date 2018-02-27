@@ -194,8 +194,7 @@ namespace Elpis
 
             _config.SaveConfig();
 
-            if (!string.IsNullOrEmpty(_config.Fields.Dns_Server))
-                HttpClient.Dns = _config.Fields.Dns_Server;
+            HttpClient.Dns = _config.Fields.Dns_Server;
         }
 
         private bool NeedsRestart()

@@ -206,8 +206,7 @@ namespace Elpis
                         _config.Fields.Proxy_User, _config.Fields.Proxy_Password);
                 }
 
-                if (!string.IsNullOrEmpty(_config.Fields.Dns_Server))
-                    HttpClient.Dns = _config.Fields.Dns_Server;
+                HttpClient.Dns = _config.Fields.Dns_Server;
 
                 var loc = _config.Fields.Elpis_StartupLocation;
                 var size = _config.Fields.Elpis_StartupSize;
