@@ -54,7 +54,7 @@
                 <Setter Property="Foreground" Value="{StaticResource MainFontBrush}" />
             </Style>
             <DataTemplate x:Key="SongTemplate">
-                <Grid Name="SongItem" HorizontalAlignment="Stretch" Height="96" Style="{StaticResource HoverGrid}">
+                <Grid Name="SongItem" HorizontalAlignment="Stretch" Height="96" Style="{StaticResource HoverGrid}" MouseRightButtonDown="SongItem_MouseRightButtonDown">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="36" />

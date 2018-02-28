@@ -488,5 +488,11 @@ namespace Elpis
                 seekToPosition(sender, e);
             }
         }
+
+        private void SongItem_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            _currMenuSong = (Song)((Grid)sender).DataContext;
+            ShowMenu(sender);
+        }
     }
 }
