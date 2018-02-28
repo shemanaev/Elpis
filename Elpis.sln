@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.40629.0
+# Visual Studio 15
+VisualStudioVersion = 15.0.27130.2036
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Elpis", "Elpis\Elpis.csproj", "{F19D43F0-5E7A-4B5C-A5D8-1B683218730B}"
 EndProject
@@ -22,8 +22,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Util", "Libs\Util\Util.csproj", "{A79647D6-4A05-4382-8B6E-4FEC154C3222}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PandoraSharpTest", "PandoraSharpTest\PandoraSharpTest.csproj", "{85EE7CF0-7B4B-4820-971E-154BC9BEF28D}"
-EndProject
-Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "ElpisSetup", "ElpisSetup\ElpisSetup.vdproj", "{DD7E8439-223A-4FE8-AFC8-869FF10E0E5D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{E7A90687-1511-4764-AEC7-EE47630FABF6}"
 EndProject
@@ -145,21 +143,6 @@ Global
 		{85EE7CF0-7B4B-4820-971E-154BC9BEF28D}.Release|Mixed Platforms.Build.0 = Release|x86
 		{85EE7CF0-7B4B-4820-971E-154BC9BEF28D}.Release|x86.ActiveCfg = Release|x86
 		{85EE7CF0-7B4B-4820-971E-154BC9BEF28D}.Release|x86.Build.0 = Release|x86
-		{DD7E8439-223A-4FE8-AFC8-869FF10E0E5D}.AppRelease|Any CPU.ActiveCfg = Release
-		{DD7E8439-223A-4FE8-AFC8-869FF10E0E5D}.AppRelease|Any CPU.Build.0 = Release
-		{DD7E8439-223A-4FE8-AFC8-869FF10E0E5D}.AppRelease|Mixed Platforms.ActiveCfg = Release
-		{DD7E8439-223A-4FE8-AFC8-869FF10E0E5D}.AppRelease|Mixed Platforms.Build.0 = Release
-		{DD7E8439-223A-4FE8-AFC8-869FF10E0E5D}.AppRelease|x86.ActiveCfg = Release
-		{DD7E8439-223A-4FE8-AFC8-869FF10E0E5D}.Debug|Any CPU.ActiveCfg = Debug
-		{DD7E8439-223A-4FE8-AFC8-869FF10E0E5D}.Debug|Any CPU.Build.0 = Debug
-		{DD7E8439-223A-4FE8-AFC8-869FF10E0E5D}.Debug|Mixed Platforms.ActiveCfg = Debug
-		{DD7E8439-223A-4FE8-AFC8-869FF10E0E5D}.Debug|Mixed Platforms.Build.0 = Debug
-		{DD7E8439-223A-4FE8-AFC8-869FF10E0E5D}.Debug|x86.ActiveCfg = Debug
-		{DD7E8439-223A-4FE8-AFC8-869FF10E0E5D}.Release|Any CPU.ActiveCfg = Release
-		{DD7E8439-223A-4FE8-AFC8-869FF10E0E5D}.Release|Any CPU.Build.0 = Release
-		{DD7E8439-223A-4FE8-AFC8-869FF10E0E5D}.Release|Mixed Platforms.ActiveCfg = Release
-		{DD7E8439-223A-4FE8-AFC8-869FF10E0E5D}.Release|Mixed Platforms.Build.0 = Release
-		{DD7E8439-223A-4FE8-AFC8-869FF10E0E5D}.Release|x86.ActiveCfg = Release
 		{B4B2C2FD-9FE7-48A9-BBC5-4D1FF1045E2A}.AppRelease|Any CPU.ActiveCfg = Release|x86
 		{B4B2C2FD-9FE7-48A9-BBC5-4D1FF1045E2A}.AppRelease|Mixed Platforms.ActiveCfg = Release|x86
 		{B4B2C2FD-9FE7-48A9-BBC5-4D1FF1045E2A}.AppRelease|Mixed Platforms.Build.0 = Release|x86
@@ -250,5 +233,8 @@ Global
 		{19FB9DF6-5C82-439D-94C7-521E6EAF3FF3} = {CC987F15-1B4B-4F63-95F5-E2E554C11986}
 		{BA7F7E8A-B089-4323-8C8D-F406E7AFCDBE} = {CC987F15-1B4B-4F63-95F5-E2E554C11986}
 		{79DDD0CE-6F79-4212-A972-8618AD6E405F} = {CC987F15-1B4B-4F63-95F5-E2E554C11986}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {17A98415-78E2-41A4-97BB-149BD1D1FEFC}
 	EndGlobalSection
 EndGlobal
