@@ -806,21 +806,23 @@ namespace Elpis
                 _config.SaveConfig();
 
 #if APP_RELEASE
-                /*var post = new PostSubmitter(ReleaseData.AnalyticsPostURL);
+                if (!string.IsNullOrWhiteSpace(ReleaseData.AnalyticsPostURL)) {
+                    var post = new PostSubmitter(ReleaseData.AnalyticsPostURL);
 
-                post.Add("guid", _config.Fields.Elpis_InstallID);
-                post.Add("curver", oldVer);
-                post.Add("newver", _config.Fields.Elpis_Version.ToString());
-                post.Add("osver", SystemInfo.GetWindowsVersion());
+                    post.Add("guid", _config.Fields.Elpis_InstallID);
+                    post.Add("curver", oldVer);
+                    post.Add("newver", _config.Fields.Elpis_Version.ToString());
+                    post.Add("osver", SystemInfo.GetWindowsVersion());
 
-                try
-                {
-                    post.Send();
+                    try
+                    {
+                        post.Send();
+                    }
+                    catch(Exception ex)
+                    {
+                        Log.O(ex.ToString());
+                    }
                 }
-                catch(Exception ex)
-                {
-                    Log.O(ex.ToString());
-                }*/
 #endif
             }
 
