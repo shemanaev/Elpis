@@ -45,11 +45,16 @@ using PandoraSharp.Plugins;
 using System.Windows.Interop;
 using Microsoft.WindowsAPICodePack.Taskbar;
 using System.Windows.Shell;
+using Windows.Data.Xml.Dom;
+using Windows.UI.Notifications;
+using Util.Web;
 
 namespace Elpis
 {
     public partial class MainWindow : Window
     {
+        private const string AppUserModelID = "Elpis.Player";
+
         #region Globals
 
         private readonly ErrorPage _errorPage;
@@ -1641,50 +1646,38 @@ namespace Elpis
             {
                 if (WindowState == WindowState.Minimized)
                 {
+                    string xml = string.Empty;
+
                     switch (option)
                     {
                         case PLAY:
                             {
-                                string tipText = _player.CurrentSong.SongTitle;
-                                _notify.BalloonTipTitle = "Playing: " + tipText;
-                                _notify.BalloonTipText = " by " + _player.CurrentSong.Artist;
+                                xml = $@"
+                                <toast>
+                                    <visual>
+                                        <binding template='ToastGeneric'>
+                                            <text>{_player.CurrentSong.SongTitle}</text>
+                                            <text>by {_player.CurrentSong.Artist}</text>
+                                            <image placement='appLogoOverride' hint-crop='circle' src='{_player.CurrentSong.ArtCacheFile}'/>
+                                        </binding>
+                                    </visual>
+                                    <audio silent='true' />
+                                </toast>";
                                 break;
                             }
-                        case PAUSE:
-                            {
-                                _notify.BalloonTipTitle = "Paused";
-                                _notify.BalloonTipText = " ";
-                                break;
-                            }
-                        case LIKE:
-                            {
-                                //this is inverse because of being applied before action is taken
-                                if (!GetCurrentSong().Loved)
-                                    _notify.BalloonTipTitle = "Song Liked";
-                                else
-                                    _notify.BalloonTipTitle = "Song Unliked";
-                                _notify.BalloonTipText = " ";
-                                break;
-                            }
-                        case DISLIKE:
-                            {
-                                _notify.BalloonTipTitle = "Song Disliked";
-                                _notify.BalloonTipText = " ";
-                                break;
-                            }
+
                         case SKIP:
-                            {
-                                _notify.BalloonTipTitle = "Song Skipped";
-                                _notify.BalloonTipText = " ";
-                                break;
-                            }
+                        case PAUSE:
+                        case LIKE:
+                        case DISLIKE:
                         default:
-                            {
-                                return;
-                            }
+                            return;
                     }
-                    
-                    _notify.ShowBalloonTip(3000);
+
+                    var doc = new XmlDocument();
+                    doc.LoadXml(xml);
+                    var toast = new ToastNotification(doc);
+                    ToastNotificationManager.CreateToastNotifier(AppUserModelID).Show(toast);
                 }
             }
         }

@@ -25,6 +25,7 @@ using PandoraSharp.Exceptions;
 using System.Collections.Generic;
 using System.Xml.Serialization;
 using System.Web.Script.Serialization;
+using System.IO;
 
 namespace PandoraSharp
 {
@@ -119,11 +120,29 @@ namespace PandoraSharp
             Finished = false;
             PlaylistTime = Time.Unix();
 
-            if (!AlbumArtUrl.IsNullOrEmpty())
+            bool downloadArt = true;
+            if (!_pandora.ImageCachePath.Equals("") && File.Exists(ArtCacheFile))
+            {
+                try
+                {
+                    AlbumImage = File.ReadAllBytes(ArtCacheFile);
+                }
+                catch (Exception)
+                {
+                    Log.O("Error retrieving image cache file: " + ArtCacheFile);
+                    downloadArt = true;
+                }
+
+                downloadArt = false;
+            }
+
+            if (downloadArt && !AlbumArtUrl.IsNullOrEmpty())
             {
                 try
                 {
                     AlbumImage = HttpClient.ByteRequest(AlbumArtUrl);
+                    if (AlbumImage.Length > 0)
+                        File.WriteAllBytes(ArtCacheFile, AlbumImage);
                 }
                 catch { }
             }
@@ -181,6 +200,13 @@ namespace PandoraSharp
                     _albumImage = value;
                 }
             }
+        }
+
+        [XmlIgnore]
+        [ScriptIgnore]
+        public string ArtCacheFile
+        {
+            get { return Path.Combine(_pandora.ImageCachePath, "Track_" + TrackToken); }
         }
 
         public void SetMetaObject(object key, object value)
