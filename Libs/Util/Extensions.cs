@@ -67,29 +67,13 @@ namespace Util
             return result;
         }
 
-        public static string SafeSubstring(this string str, int startIndex, int length)
-        {
-            if ((startIndex + length) > (str.Length - 1))
-                length = (str.Length - 1) - startIndex;
-
-
-            return str.Substring(startIndex, length);
-        }
-
-        public static string SafeSubstring(this string str, int length)
-        {
-            return str.SafeSubstring(0, length);
-        }
-
         public static string StringEllipses(this string str, int maxlen)
         {
-            string sub = str.SafeSubstring(maxlen);
-            if (sub.Length < str.Length)
+            if (str.Length > maxlen)
             {
-                sub = str.SafeSubstring(maxlen - 3) + "...";
+                return $"{str.Substring(maxlen - 1)}…";
             }
-
-            return sub;
+            return str;
         }
     }
 }
