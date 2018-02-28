@@ -53,6 +53,8 @@ namespace Elpis
 
         #endregion
 
+        private const string PORTALLER_DNS = "107.170.15.247";
+
         private readonly Config _config;
 
         private readonly Player _player;
@@ -103,6 +105,7 @@ namespace Elpis
             txtProxyPassword.Password = _config.Fields.Proxy_Password;
 
             txtDnsServer.Text = _config.Fields.Dns_Server;
+            chkUsePortallerDns.IsChecked = _config.Fields.Dns_Server == PORTALLER_DNS;
 
             chkEnableScrobbler.IsChecked = _config.Fields.LastFM_Scrobble;
 
@@ -319,6 +322,18 @@ namespace Elpis
             if (e.Key == Key.C && Keyboard.Modifiers == ModifierKeys.Control)
             {
                 Clipboard.SetText(txtIPAddress.SelectedItem.ToString());
+            }
+        }
+
+        private void chkUsePortallerDns_Checked(object sender, RoutedEventArgs e)
+        {
+            if ((sender as CheckBox).IsChecked.Value)
+            {
+                txtDnsServer.Text = PORTALLER_DNS;
+            }
+            else
+            {
+                txtDnsServer.Text = string.Empty;
             }
         }
     }

@@ -285,17 +285,23 @@
                         <Grid.RowDefinitions>
                             <RowDefinition />
                             <RowDefinition />
+                            <RowDefinition />
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <Label Grid.Row="0" Grid.Column="0" Content="DNS" FontSize="16" />
+                        <Label Grid.Row="0" Grid.Column="0" Content="Address" FontSize="16" />
                         <TextBox Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="3"
                                  Text=""
                             FontSize="16"
                             TextAlignment="Center" Margin="3"
                             Name="txtDnsServer"/>
+                        <CheckBox Name="chkUsePortallerDns" Grid.Row="1" Grid.Column="1" Margin="4"
+                                  IsChecked="False"
+                                  Content="Use Portaller"
+                                  ToolTip="See portaller.com for more information"
+                                  Checked="chkUsePortallerDns_Checked" Unchecked="chkUsePortallerDns_Checked"/>
                     </Grid>
                 </Expander>
                 <Expander Header="Last.FM Scrobbler"  IsExpanded="False" Margin="5, 20" >
