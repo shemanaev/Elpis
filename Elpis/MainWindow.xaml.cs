@@ -1659,7 +1659,7 @@ namespace Elpis
                                         <binding template='ToastGeneric'>
                                             <text>{_player.CurrentSong.SongTitle}</text>
                                             <text>by {_player.CurrentSong.Artist}</text>
-                                            <image placement='appLogoOverride' hint-crop='circle' src='{_player.CurrentSong.ArtCacheFile}'/>
+                                            <image placement='appLogoOverride' hint-crop='none' src='{_player.CurrentSong.ArtCacheFile}'/>
                                         </binding>
                                     </visual>
                                     <audio silent='true' />
