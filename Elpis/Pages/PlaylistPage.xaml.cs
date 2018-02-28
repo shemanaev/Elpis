@@ -68,7 +68,7 @@ namespace Elpis
 
             _feedbackMap = new Dictionary<Song, ImageButton[]>();
 
-            _songMenu = this.Resources["SongMenu"] as ContextMenu;
+            _songMenu = Resources["SongMenu"] as ContextMenu;
             //This would need to be changed if the menu order is ever changed
             _purchaseMenu = _songMenu.Items[0] as MenuItem;
             _purchaseAmazonAlbum = _purchaseMenu.Items[0] as MenuItem;
@@ -159,7 +159,7 @@ namespace Elpis
 
         private void _player_LoadingNextSong(object sender)
         {
-            UpdateProgress(new BassAudioEngine.Progress {ElapsedTime = new TimeSpan(0), TotalTime = new TimeSpan(0)});
+            UpdateProgress(new BassAudioEngine.Progress { ElapsedTime = new TimeSpan(0), TotalTime = new TimeSpan(0) });
             this.BeginDispatch(() =>
                                    {
                                        CurrentSong.Visibility = Visibility.Hidden;
@@ -198,12 +198,12 @@ namespace Elpis
                            Storyboard remSB;
                            if (last)
                            {
-                               remSB = ((Storyboard) Resources["ListBoxRemoveLast"]).Clone();
+                               remSB = ((Storyboard)Resources["ListBoxRemoveLast"]).Clone();
                            }
                            else
                            {
-                               remSB = ((Storyboard) Resources["ListBoxRemove"]).Clone();
-                               ((DoubleAnimation) remSB.Children[1]).From = (item).ActualHeight;
+                               remSB = ((Storyboard)Resources["ListBoxRemove"]).Clone();
+                               ((DoubleAnimation)remSB.Children[1]).From = (item).ActualHeight;
                            }
 
                            remSB.Completed += ((o, e) => lstOldSongs.Items.Remove(item));
@@ -222,7 +222,7 @@ namespace Elpis
             RoutedEventHandler loadEvent = AnimateListAdd(lstOldSongs.Items.Count == 0);
             songControl.Loaded += loadEvent;
             songControl.Tag = loadEvent;
-            songControl.ContentTemplate = (DataTemplate) Resources["SongTemplate"];
+            songControl.ContentTemplate = (DataTemplate)Resources["SongTemplate"];
             songControl.Content = song;
 
             lstOldSongs.Items.Insert(0, songControl);
@@ -235,17 +235,16 @@ namespace Elpis
                            Storyboard addSB;
                            if (first)
                            {
-                               addSB = ((Storyboard) Resources["ListBoxAddFirst"]).Clone();
+                               addSB = ((Storyboard)Resources["ListBoxAddFirst"]).Clone();
                            }
                            else
                            {
-                               addSB = ((Storyboard) Resources["ListBoxAdd"]).Clone();
-                               //((DoubleAnimation) addSB.Children[0]).To = 96;//((ContentControl)o1).ActualHeight;
+                               addSB = ((Storyboard)Resources["ListBoxAdd"]).Clone();
                            }
-                           addSB.Begin((ContentControl) o1);
+                           addSB.Begin((ContentControl)o1);
 
-                           var song = (ContentControl) o1;
-                           song.Loaded -= (RoutedEventHandler) song.Tag;
+                           var song = (ContentControl)o1;
+                           song.Loaded -= (RoutedEventHandler)song.Tag;
                        };
         }
 
@@ -260,7 +259,7 @@ namespace Elpis
                 String[] stat = txtStationName.Text.Split('-');
                 if (stat[0].Equals("Quick Mix"))
                 {
-                    txtStationName.Text = stat[0]+"-"+song.Station.Name;
+                    txtStationName.Text = stat[0] + "-" + song.Station.Name;
                 }
             });
         }
@@ -338,7 +337,7 @@ namespace Elpis
 
         private Song GetItemSong(object sender)
         {
-            return (Song) (((ImageButton) sender).FindParentByName<Grid>("SongItem")).DataContext;
+            return (Song)(((ImageButton)sender).FindParentByName<Grid>("SongItem")).DataContext;
         }
 
         private void ShowMenu(object sender)
@@ -446,7 +445,7 @@ namespace Elpis
                 }
                 else
                 {
-                    if(_currMenuSong.AmazonAlbumUrl != null)
+                    if (_currMenuSong.AmazonAlbumUrl != null)
                     {
                         string url = _currMenuSong.AmazonAlbumUrl;
 
@@ -473,8 +472,7 @@ namespace Elpis
 
         private void seekToPosition(object sender, MouseEventArgs e)
         {
-            int percentClicked = (int)Math.Round(e.GetPosition((ProgressBar)sender).X / this.progPlayTime.ActualWidth * 100);
-            //Util.Log.O("Bar percentage, numerator, denominator: {0} {1} {2}", new object[] {percentClicked, e.GetPosition((ProgressBar)sender).X, this.progPlayTime.ActualWidth});
+            int percentClicked = (int)Math.Round(e.GetPosition((ProgressBar)sender).X / progPlayTime.ActualWidth * 100);
             _player.SeekToTime(percentClicked);
         }
 
