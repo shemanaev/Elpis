@@ -545,24 +545,31 @@ namespace PandoraSharpPlayer
         private void RunTask(Action method)
         {
             Task.Factory.StartNew(() =>
-                                      {
-                                          try
-                                          {
-                                              method();
-                                          }
-                                          catch (PandoraException pex)
-                                          {
-                                              Log.O(pex.Fault.ToString() + ": " + pex);
-                                              SendPandoraError(pex.Fault, pex);
-                                          }
-                                          catch (Exception ex)
-                                          {
-                                              Log.O(ex.ToString());
+            {
+                try
+                {
+                    method();
+                }
+                catch (PandoraException pex)
+                {
+                    Log.O(pex.Fault.ToString() + ": " + pex);
+                    SendPandoraError(pex.Fault, pex);
+                }
+                catch (Exception ex)
+                {
+                    Log.O(ex.ToString());
 
-                                              SendPandoraError(ErrorCodes.UNKNOWN_ERROR, ex);
-                                          }
-                                      }
-                );
+                    SendPandoraError(ErrorCodes.UNKNOWN_ERROR, ex);
+                }
+            });
+        }
+
+        public void ClearImageCache()
+        {
+            foreach (string f in Directory.EnumerateFiles(_pandora.ImageCachePath, "Track_*"))
+            {
+                File.Delete(f);
+            }
         }
 
         public void Logout()
@@ -577,8 +584,7 @@ namespace PandoraSharpPlayer
             Email = string.Empty;
             Password = string.Empty;
 
-            if (LogoutEvent != null)
-                LogoutEvent(this);
+            LogoutEvent?.Invoke(this);
             _cqman.SendStatusUpdate(QueryStatusValue.Disconnected);
         }
 
@@ -729,16 +735,16 @@ namespace PandoraSharpPlayer
         public void StationDelete(Station station)
         {
             RunTask(() =>
-                        {
-                            bool playQuickMix = (CurrentStation == null) ? false : (station.ID == CurrentStation.ID);
-                            station.Delete();
-                            _pandora.RefreshStations();
-                            if (playQuickMix)
-                            {
-                                Log.O("Current station deleted, playing Quick Mix");
-                                PlayStation(Stations[0]); //Set back to quickmix because current was deleted
-                            }
-                        });
+            {
+                bool playQuickMix = (CurrentStation == null) ? false : (station.ID == CurrentStation.ID);
+                station.Delete();
+                _pandora.RefreshStations();
+                if (playQuickMix)
+                {
+                    Log.O("Current station deleted, playing Quick Mix");
+                    PlayStation(Stations[0]); //Set back to quickmix because current was deleted
+                }
+            });
         }
 
         public void StationSearchNew(string query)
@@ -746,8 +752,7 @@ namespace PandoraSharpPlayer
             RunTask(() =>
                         {
                             List<SearchResult> result = _pandora.Search(query);
-                            if (SearchResult != null)
-                                SearchResult(this, result);
+                            SearchResult?.Invoke(this, result);
                         });
         }
 
@@ -756,8 +761,7 @@ namespace PandoraSharpPlayer
             RunTask(() =>
             {
                 Station station = _pandora.CreateStationFromSong(song);
-                if (StationCreated != null)
-                    StationCreated(this, station);
+                StationCreated?.Invoke(this, station);
             });
         }
 
@@ -766,19 +770,17 @@ namespace PandoraSharpPlayer
             RunTask(() =>
             {
                 Station station = _pandora.CreateStationFromArtist(song);
-                if (StationCreated != null)
-                    StationCreated(this, station);
+                StationCreated?.Invoke(this, station);
             });
         }
 
         public void CreateStation(SearchResult result)
         {
             RunTask(() =>
-                        {
-                            Station station = _pandora.CreateStationFromSearch(result.MusicToken);
-                            if (StationCreated != null)
-                                StationCreated(this, station);
-                        });
+            {
+                Station station = _pandora.CreateStationFromSearch(result.MusicToken);
+                StationCreated?.Invoke(this, station);
+            });
         }
 
         public void SaveQuickMix()
@@ -818,10 +820,10 @@ namespace PandoraSharpPlayer
         {
             if (!IsStationLoaded) return;
             RunTask(() =>
-                        {
-                            CurrentStation = null;
-                            _bass.Stop();
-                        });
+            {
+                CurrentStation = null;
+                _bass.Stop();
+            });
         }
 
         bool _isNext = false;

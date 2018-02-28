@@ -859,6 +859,7 @@ namespace Elpis
             string cachePath = Path.Combine(Config.ElpisAppData, "Cache");
             if (!Directory.Exists(cachePath)) Directory.CreateDirectory(cachePath);
             _player.ImageCachePath = cachePath;
+            _player.ClearImageCache();
 
             _loadingPage.UpdateStatus("Starting Web Server...");
 
