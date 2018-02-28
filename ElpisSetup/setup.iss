@@ -48,6 +48,7 @@ Source: "..\Elpis\bin\AppRelease\Elpis.exe.config"; DestDir: "{app}"; Flags: ign
 Source: "..\Elpis\bin\AppRelease\Interop.IWshRuntimeLibrary.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\Elpis\bin\AppRelease\Kayak.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\Elpis\bin\AppRelease\Lpfm.LastFmScrobbler.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\Elpis\bin\AppRelease\Microsoft.Toolkit.Uwp.Notifications.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\Elpis\bin\AppRelease\Microsoft.WindowsAPICodePack.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\Elpis\bin\AppRelease\Microsoft.WindowsAPICodePack.Shell.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\Elpis\bin\AppRelease\netstandard.dll"; DestDir: "{app}"; Flags: ignoreversion

@@ -47,7 +47,7 @@ using Microsoft.WindowsAPICodePack.Taskbar;
 using System.Windows.Shell;
 using Windows.Data.Xml.Dom;
 using Windows.UI.Notifications;
-using Util.Web;
+using Microsoft.Toolkit.Uwp.Notifications;
 
 namespace Elpis
 {
@@ -1653,17 +1653,43 @@ namespace Elpis
                     {
                         case PLAY:
                             {
-                                xml = $@"
-                                <toast>
-                                    <visual>
-                                        <binding template='ToastGeneric'>
-                                            <text>{_player.CurrentSong.SongTitle}</text>
-                                            <text>by {_player.CurrentSong.Artist}</text>
-                                            <image placement='appLogoOverride' hint-crop='none' src='{_player.CurrentSong.ArtCacheFile}'/>
-                                        </binding>
-                                    </visual>
-                                    <audio silent='true' />
-                                </toast>";
+
+                                var title = _player.CurrentSong.SongTitle;
+                                var artist = _player.CurrentSong.Artist;
+                                var albumArt = $"file:///{_player.CurrentSong.ArtCacheFile}";
+
+                                var toastContent = new ToastContent()
+                                {
+                                    Visual = new ToastVisual()
+                                    {
+                                        BindingGeneric = new ToastBindingGeneric()
+                                        {
+                                            Children =
+                                            {
+                                                new AdaptiveText()
+                                                {
+                                                    Text = title,
+                                                    HintMaxLines = 1
+                                                },
+
+                                                new AdaptiveText()
+                                                {
+                                                    Text = artist
+                                                }
+                                            },
+                                            AppLogoOverride = new ToastGenericAppLogo()
+                                            {
+                                                Source = albumArt,
+                                                HintCrop = ToastGenericAppLogoCrop.None
+                                            }
+                                        }
+                                    },
+                                    Audio = new ToastAudio()
+                                    {
+                                        Silent = true
+                                    }
+                                };
+                                xml = toastContent.GetContent();
                                 break;
                             }
 
@@ -1675,10 +1701,17 @@ namespace Elpis
                             return;
                     }
 
-                    var doc = new XmlDocument();
-                    doc.LoadXml(xml);
-                    var toast = new ToastNotification(doc);
-                    ToastNotificationManager.CreateToastNotifier(AppUserModelID).Show(toast);
+                    try
+                    {
+                        var doc = new XmlDocument();
+                        doc.LoadXml(xml);
+                        var toast = new ToastNotification(doc);
+                        ToastNotificationManager.CreateToastNotifier(AppUserModelID).Show(toast);
+                    }
+                    catch (Exception e)
+                    {
+                        Log.O("Error showing toast: {0}", e);
+                    }
                 }
             }
         }
