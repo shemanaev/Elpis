@@ -43,7 +43,6 @@ Source: "..\Elpis\bin\AppRelease\Bass.Net.dll"; DestDir: "{app}"; Flags: ignorev
 Source: "..\Elpis\bin\AppRelease\bass_aac.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\Elpis\bin\AppRelease\BassPlayer.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\Elpis\bin\AppRelease\DNS.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\Elpis\bin\AppRelease\Elpis.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\Elpis\bin\AppRelease\Elpis.exe.config"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\Elpis\bin\AppRelease\Interop.IWshRuntimeLibrary.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\Elpis\bin\AppRelease\Kayak.dll"; DestDir: "{app}"; Flags: ignoreversion
@@ -58,7 +57,7 @@ Source: "..\Elpis\bin\AppRelease\PandoraSharpPlayer.dll"; DestDir: "{app}"; Flag
 Source: "..\Elpis\bin\AppRelease\PandoraSharpScrobbler.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\Elpis\bin\AppRelease\PlayerControlQuery.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\Elpis\bin\AppRelease\Util.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\Elpis\bin\AppRelease\RemoteControl\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "..\Elpis\bin\AppRelease\RemoteControl\*"; DestDir: "{app}\RemoteControl"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
