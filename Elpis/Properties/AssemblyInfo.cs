@@ -9,9 +9,9 @@ using System.Windows;
 [assembly: AssemblyTitle("Elpis")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Adam Haile, Alexey Seliverstov")]
+[assembly: AssemblyCompany("Adam Haile, Alexey Seliverstov, Denis Shemanaev")]
 [assembly: AssemblyProduct("Elpis")]
-[assembly: AssemblyCopyright("Copyright © Adam Haile, Alexey Seliverstov 2015")]
+[assembly: AssemblyCopyright("Copyright © 2015 Adam Haile, Alexey Seliverstov, 2018 Denis Shemanaev")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -52,5 +52,5 @@ using System.Windows;
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
 
-[assembly: AssemblyVersion("1.6.0")]
+[assembly: AssemblyVersion("1.7.0")]
 //[assembly: AssemblyFileVersion("0.0.0.0")]
