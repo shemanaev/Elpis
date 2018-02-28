@@ -95,6 +95,7 @@
     <Compile Include="Options.cs" />
     <Compile Include="PostSubmitter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ScreenUtils.cs" />
     <Compile Include="StringCrypt.cs" />
     <Compile Include="SystemInfo.cs" />
     <Compile Include="SystemSessionState.cs" />

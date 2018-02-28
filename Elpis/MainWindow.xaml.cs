@@ -1643,75 +1643,71 @@ namespace Elpis
 
         private void showBalloon(int option, int duration = 3000)
         {
-            if (_config.Fields.Elpis_ShowTrayNotifications)
+            if (_config.Fields.Elpis_ShowTrayNotifications &&
+                WindowState == WindowState.Minimized &&
+                !ScreenUtils.IsForegroundWindowFullScreen())
             {
-                if (WindowState == WindowState.Minimized)
+                ToastContent toastContent;
+                switch (option)
                 {
-                    string xml = string.Empty;
+                    case PLAY:
+                        {
+                            var title = _player.CurrentSong.SongTitle;
+                            var artist = _player.CurrentSong.Artist;
+                            var albumArt = $"file:///{_player.CurrentSong.ArtCacheFile}";
 
-                    switch (option)
-                    {
-                        case PLAY:
+                            toastContent = new ToastContent()
                             {
-
-                                var title = _player.CurrentSong.SongTitle;
-                                var artist = _player.CurrentSong.Artist;
-                                var albumArt = $"file:///{_player.CurrentSong.ArtCacheFile}";
-
-                                var toastContent = new ToastContent()
+                                Visual = new ToastVisual()
                                 {
-                                    Visual = new ToastVisual()
+                                    BindingGeneric = new ToastBindingGeneric()
                                     {
-                                        BindingGeneric = new ToastBindingGeneric()
+                                        Children =
                                         {
-                                            Children =
+                                            new AdaptiveText()
                                             {
-                                                new AdaptiveText()
-                                                {
-                                                    Text = title,
-                                                    HintMaxLines = 1
-                                                },
-
-                                                new AdaptiveText()
-                                                {
-                                                    Text = artist
-                                                }
+                                                Text = title,
+                                                HintMaxLines = 1
                                             },
-                                            AppLogoOverride = new ToastGenericAppLogo()
+
+                                            new AdaptiveText()
                                             {
-                                                Source = albumArt,
-                                                HintCrop = ToastGenericAppLogoCrop.None
+                                                Text = artist
                                             }
+                                        },
+                                        AppLogoOverride = new ToastGenericAppLogo()
+                                        {
+                                            Source = albumArt,
+                                            HintCrop = ToastGenericAppLogoCrop.None
                                         }
-                                    },
-                                    Audio = new ToastAudio()
-                                    {
-                                        Silent = true
                                     }
-                                };
-                                xml = toastContent.GetContent();
-                                break;
-                            }
+                                },
+                                Audio = new ToastAudio()
+                                {
+                                    Silent = true
+                                }
+                            };
+                            break;
+                        }
 
-                        case SKIP:
-                        case PAUSE:
-                        case LIKE:
-                        case DISLIKE:
-                        default:
-                            return;
-                    }
+                    case SKIP:
+                    case PAUSE:
+                    case LIKE:
+                    case DISLIKE:
+                    default:
+                        return;
+                }
 
-                    try
-                    {
-                        var doc = new XmlDocument();
-                        doc.LoadXml(xml);
-                        var toast = new ToastNotification(doc);
-                        ToastNotificationManager.CreateToastNotifier(AppUserModelID).Show(toast);
-                    }
-                    catch (Exception e)
-                    {
-                        Log.O("Error showing toast: {0}", e);
-                    }
+                try
+                {
+                    var doc = new XmlDocument();
+                    doc.LoadXml(toastContent.GetContent());
+                    var toast = new ToastNotification(doc);
+                    ToastNotificationManager.CreateToastNotifier(AppUserModelID).Show(toast);
+                }
+                catch (Exception e)
+                {
+                    Log.O("Error showing toast: {0}", e);
                 }
             }
         }
