@@ -59,10 +59,12 @@
                                         <ColumnDefinition Width="*" />
                                     </Grid.ColumnDefinitions>
                                     <Image Grid.Column="0"
-                         Source="{Binding Path=ArtImage, 
-                                                                    Converter={StaticResource imgConverter}, 
-                                                                    ConverterParameter={StaticResource Image_UnknownArt}}"
-                         Height="96" Width="96" />
+                                           RenderOptions.BitmapScalingMode="HighQuality"
+                                           Source="{Binding Path=ArtImage,
+                                                            Converter={StaticResource imgConverter},
+                                                            ConverterParameter={StaticResource Image_UnknownArt}}"
+                                           Height="96"
+                                           Width="96" />
                                     <Grid Grid.Column="1">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="Auto" />
