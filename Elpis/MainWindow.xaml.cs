@@ -733,7 +733,13 @@ namespace Elpis
                 }
             });
 
-            _notify.ContextMenuStrip.Opening += ((o, e) => LoadNotifyMenu());
+            _notify.MouseDown += ((o, e) =>
+            {
+                if (e.Button == MouseButtons.Right)
+                {
+                    LoadNotifyMenu();
+                }
+            });
 
             _notify.Visible = true;
         }
