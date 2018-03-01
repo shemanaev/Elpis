@@ -1673,9 +1673,7 @@ namespace Elpis
                                             new AdaptiveText()
                                             {
                                                 Text = title,
-                                                HintMaxLines = 1
                                             },
-
                                             new AdaptiveText()
                                             {
                                                 Text = artist
