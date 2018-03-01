@@ -1708,7 +1708,10 @@ namespace Elpis
                 {
                     var doc = new XmlDocument();
                     doc.LoadXml(toastContent.GetContent());
-                    var toast = new ToastNotification(doc);
+                    var toast = new ToastNotification(doc)
+                    {
+                        ExpirationTime = DateTime.Now.AddSeconds(8)
+                    };
                     ToastNotificationManager.CreateToastNotifier(AppUserModelID).Show(toast);
                 }
                 catch (Exception e)
