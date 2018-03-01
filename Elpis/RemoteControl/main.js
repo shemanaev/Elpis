@@ -41,8 +41,7 @@ function togglePlayButton(paused) {
 }
 
 function playButtonClick(event) {
-  const url = isPlaying ? '/pause' : '/play'
-  fetch(url)
+  fetch('/toggleplaypause')
     .then((repsonse) => {
       togglePlayButton(isPlaying)
       isPlaying = !isPlaying

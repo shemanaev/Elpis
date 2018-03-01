@@ -982,18 +982,18 @@ namespace Elpis
 
         public static void PlayPauseToggle()
         {
-            System.Windows.Application.Current.Dispatcher.Invoke((Action)(() =>
+            System.Windows.Application.Current.Dispatcher.Invoke(() =>
             {
                 if (_player.Paused)
                 {
-                    _mainWindow.showBalloon(PLAY);
+                    //_mainWindow.showBalloon(PLAY);
                 }
                 if (_player.Playing)
                 {
                     _mainWindow.showBalloon(PAUSE);
                 }
                 _player.PlayPause();
-            }));
+            });
         }
 
         public static void Like()
@@ -1636,7 +1636,7 @@ namespace Elpis
             }
             else
             {
-                showBalloon(PLAY);
+                //showBalloon(PLAY);
             }
             _player.PlayPause();
         }
