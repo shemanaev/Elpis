@@ -10,6 +10,11 @@ namespace Util
             const int MONITOR_DEFAULTTOPRIMARY = 1;
 
             var hWnd = GetForegroundWindow();
+            if (hWnd == GetDesktopWindow() || hWnd == GetShellWindow())
+            {
+                return false;
+            }
+
             GetWindowRect(hWnd, out Rect rect);
 
             var mi = new MonitorInfoEx();
@@ -32,6 +37,12 @@ namespace Util
 
         [DllImport("user32.dll")]
         internal static extern IntPtr GetForegroundWindow();
+
+        [DllImport("user32.dll")]
+        private static extern IntPtr GetDesktopWindow();
+
+        [DllImport("user32.dll")]
+        private static extern IntPtr GetShellWindow();
 
         [DllImport("User32")]
         internal static extern IntPtr MonitorFromWindow(IntPtr hWnd, int dwFlags);
