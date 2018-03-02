@@ -18,6 +18,8 @@ namespace Elpis
         [STAThread]
         public static void Main()
         {
+            AppDomain.CurrentDomain.UnhandledException += ExceptionHandler;
+
             if (SingleInstance<App>.InitializeAsFirstInstance("ElpisInstance"))
             {
                 var application = new App();
@@ -27,6 +29,13 @@ namespace Elpis
                 // Allow single instance code to perform cleanup operations
                 SingleInstance<App>.Cleanup();
             }
+        }
+
+        private static void ExceptionHandler(object sender, UnhandledExceptionEventArgs args)
+        {
+            var e = (Exception)args.ExceptionObject;
+            var filename = $"Crash_{DateTime.Now:yyyy-MM-dd_HH-mm-ss}.txt";
+            File.WriteAllText(Path.Combine(Config.ElpisAppData, filename), e.ToString());
         }
 
         public void Init()
