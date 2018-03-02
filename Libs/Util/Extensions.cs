@@ -69,11 +69,7 @@ namespace Util
 
         public static string StringEllipses(this string str, int maxlen)
         {
-            if (str.Length > maxlen)
-            {
-                return $"{str.Substring(maxlen - 1)}…";
-            }
-            return str;
+            return str.Length > maxlen ? $"{str.Substring(0, maxlen - 1)}…" : str;
         }
     }
 }

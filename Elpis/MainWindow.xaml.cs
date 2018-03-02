@@ -1337,22 +1337,22 @@ namespace Elpis
         {
             this.BeginDispatch(() =>
             {
-                if (newState == BassAudioEngine.PlayState.Playing)
+                switch (newState)
                 {
-                    string title = $"{_player.CurrentSong.Artist} — {_player.CurrentSong.SongTitle}";
-                    _notify.Text = title.Replace("&", "&&&").StringEllipses(127);
-                    Title = title;
-                }
-                else if (newState == BassAudioEngine.PlayState.Paused)
-                {
-                    Title = _notify.Text = "Elpis";
-                }
-                else if (newState == BassAudioEngine.PlayState.Stopped)
-                {
-                    mainBar.SetPlaying(false);
-                    Title = _notify.Text = "Elpis";
-                    if (_player.LoggedIn)
-                        ShowStationList();
+                    case BassAudioEngine.PlayState.Playing:
+                        Title = $"{_player.CurrentSong.Artist} — {_player.CurrentSong.SongTitle}";
+                        _notify.Text = Title.Replace("&", "&&&").StringEllipses(63);
+                        break;
+                    case BassAudioEngine.PlayState.Paused:
+                        Title = $"[Paused] {_player.CurrentSong.Artist} — {_player.CurrentSong.SongTitle}";
+                        _notify.Text = Title.Replace("&", "&&&").StringEllipses(63);
+                        break;
+                    case BassAudioEngine.PlayState.Stopped:
+                        mainBar.SetPlaying(false);
+                        Title = _notify.Text = "Elpis";
+                        if (_player.LoggedIn)
+                            ShowStationList();
+                        break;
                 }
             });
         }
