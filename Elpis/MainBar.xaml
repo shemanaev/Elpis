@@ -51,8 +51,8 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="*" />
             <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="Auto" />
@@ -75,9 +75,10 @@
                                ToolTip="Show Volume Slider"
                                Click="btnVolume_Click" VerticalAlignment="Center" HorizontalAlignment="Center" Visibility="Hidden" />
         
-        <Grid Name="gridPlayPause" Grid.Column="3" Visibility="Hidden">
+        <Grid Name="gridPlayPause" Grid.Column="3" Visibility="Hidden"
+              HorizontalAlignment="Right"
+              Margin="0,0,-30,0">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
@@ -116,12 +117,29 @@
               MouseEnter="gridVolume_MouseEnter"
               Style="{StaticResource VolumeFade}">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-            
-            <Slider Name="sVolume" Height="28" Grid.Column="0" Minimum="0" Maximum="100" Margin="8,5,8,2" ValueChanged="sVolume_VolumeChanged" />
-            <Image Name="imgVolume" Grid.Column="1" Width="24" Height="24" Margin="8,2,8,2" Source="/Elpis;component/Images/volume_100.png"  />
+
+            <ElpisControls:ImageButton x:Name="btnVolumeHide"
+                                       Width="20"
+                                       Height="20"
+                                       Margin="10,2,2,4"
+                                       Grid.Column="0" 
+                                       ActiveImageUri="{StaticResource Image_Volume_100_Hover}"
+                                       InactiveImageUri="{StaticResource Image_Volume_100}"
+                                       ToolTip="Hide Volume Slider"
+                                       Click="btnVolumeHide_Click"
+                                       VerticalAlignment="Center"
+                                       HorizontalAlignment="Center" />
+            <Slider Name="sVolume"
+                    Height="28"
+                    Grid.Column="1"
+                    Minimum="0"
+                    Maximum="100"
+                    Margin="8,5,8,2"
+                    IsMoveToPointEnabled="True"
+                    ValueChanged="sVolume_VolumeChanged" />
         </Grid>
         <ElpisControls:ImageButton Width="20" Height="20" Margin="2,2,20,2" Grid.Column="5" x:Name="btnSettings"
                                ActiveImageUri="{StaticResource Image_SettingsHover}" InactiveImageUri="{StaticResource Image_Settings}"

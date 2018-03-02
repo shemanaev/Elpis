@@ -280,23 +280,48 @@ namespace Elpis
 
         private void sVolume_VolumeChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            if (VolumeChanged != null)
-                VolumeChanged(e.NewValue);
+            VolumeChanged?.Invoke(e.NewValue);
 
             if (Volume == 0)
-                imgVolume.Source = new BitmapImage(Resources["Image_Volume_0"] as System.Uri);
+            {
+                btnVolume.ActiveImageUri = Resources["Image_Volume_0_Hover"] as System.Uri;
+                btnVolume.InactiveImageUri = Resources["Image_Volume_0"] as System.Uri;
+                btnVolumeHide.ActiveImageUri = btnVolume.ActiveImageUri;
+                btnVolumeHide.InactiveImageUri = btnVolume.InactiveImageUri;
+            }
             else if (Volume > 0 && Volume < 33)
-                imgVolume.Source = new BitmapImage(Resources["Image_Volume_33"] as System.Uri);
-            else if(Volume >= 33 && Volume < 66)
-                imgVolume.Source = new BitmapImage(Resources["Image_Volume_66"] as System.Uri);
-            else if(Volume >= 66)
-                imgVolume.Source = new BitmapImage(Resources["Image_Volume_100"] as System.Uri);
+            {
+                btnVolume.ActiveImageUri = Resources["Image_Volume_33_Hover"] as System.Uri;
+                btnVolume.InactiveImageUri = Resources["Image_Volume_33"] as System.Uri;
+                btnVolumeHide.ActiveImageUri = btnVolume.ActiveImageUri;
+                btnVolumeHide.InactiveImageUri = btnVolume.InactiveImageUri;
+            }
+            else if (Volume >= 33 && Volume < 66)
+            {
+                btnVolume.ActiveImageUri = Resources["Image_Volume_66_Hover"] as System.Uri;
+                btnVolume.InactiveImageUri = Resources["Image_Volume_66"] as System.Uri;
+                btnVolumeHide.ActiveImageUri = btnVolume.ActiveImageUri;
+                btnVolumeHide.InactiveImageUri = btnVolume.InactiveImageUri;
+            }
+            else if (Volume >= 66)
+            {
+                btnVolume.ActiveImageUri = Resources["Image_Volume_100_Hover"] as System.Uri;
+                btnVolume.InactiveImageUri = Resources["Image_Volume_100"] as System.Uri;
+                btnVolumeHide.ActiveImageUri = btnVolume.ActiveImageUri;
+                btnVolumeHide.InactiveImageUri = btnVolume.InactiveImageUri;
+            }
         }
 
         private void btnVolume_Click(object sender, RoutedEventArgs e)
         {
             volCloseTimer.Stop();
             gridVolume.Visibility = System.Windows.Visibility.Visible;
+        }
+
+        private void btnVolumeHide_Click(object sender, RoutedEventArgs e)
+        {
+            volCloseTimer.Stop();
+            gridVolume.Visibility = System.Windows.Visibility.Hidden;
         }
 
         void volCloseTimer_Elapsed(object sender, ElapsedEventArgs e)
