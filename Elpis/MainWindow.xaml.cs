@@ -1056,7 +1056,7 @@ namespace Elpis
         {
             if (InitLogic())
             {
-//#if APP_RELEASE
+#if APP_RELEASE
                 _update = new UpdateCheck();
                 if (_config.Fields.Elpis_CheckUpdates)
                 {
@@ -1080,7 +1080,9 @@ namespace Elpis
                 {
                     FinalLoad();
                 }
-//#endif
+#else
+                FinalLoad();
+#endif
             }
         }
 
