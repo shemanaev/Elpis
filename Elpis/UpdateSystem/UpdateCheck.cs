@@ -24,11 +24,18 @@ using System.Threading;
 using System.Threading.Tasks;
 using Util;
 using System.ComponentModel;
+using System.Collections.Generic;
+using System.Linq;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace Elpis.UpdateSystem
 {
     public class UpdateCheck
     {
+        private const string InstallerNameStartsWith = "Elpis_";
+        private const string UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36";
+
         #region Delegates
 
         public delegate void UpdateDataLoadedEventHandler(bool foundUpdate);
@@ -43,15 +50,10 @@ namespace Elpis.UpdateSystem
         private bool _downloadComplete;
         private string _downloadString = string.Empty;
 
-        public Version CurrentVersion
-        {
-            //get { return new Version(0, 5); } //uncomment to force update
-            get { return Assembly.GetEntryAssembly().GetName().Version; }
-        }
+        public Version CurrentVersion => Assembly.GetEntryAssembly().GetName().Version;
 
         public Version NewVersion { get; set; }
         public string DownloadUrl { get; set; }
-        public string ReleaseNotesPath { get; set; }
         public string ReleaseNotes { get; set; }
         public bool UpdateNeeded { get; set; }
         public string UpdatePath { get; set; }
@@ -60,14 +62,14 @@ namespace Elpis.UpdateSystem
 
         private void SendUpdateEvent(bool foundUpdate)
         {
-            if (UpdateDataLoadedEvent != null)
-                UpdateDataLoadedEvent(foundUpdate);
+            UpdateDataLoadedEvent?.Invoke(foundUpdate);
         }
 
         private string DownloadString(string url, int timeoutSec = 10)
         {
             using (var wc = new WebClient())
             {
+                wc.Headers.Add("User-Agent", UserAgent);
                 wc.DownloadStringCompleted += wc_DownloadStringCompleted;
 
                 _downloadComplete = false;
@@ -86,7 +88,7 @@ namespace Elpis.UpdateSystem
 
                 wc.CancelAsync();
 
-                throw new Exception("Timeout waiting for " + url + " to download.");
+                throw new Exception($"Timeout waiting for {url} to download.");
             }
         }
 
@@ -98,38 +100,42 @@ namespace Elpis.UpdateSystem
             _downloadComplete = true;
         }
 
-        private bool CheckForUpdateInternal(bool beta = false)
+        public bool CheckForUpdate(bool beta = false)
         {
             try
             {
-                Log.O("Checking for "+(beta?"beta ":"")+"updates...");
-                string updateUrl = "";
+                Log.O($"Checking for {(beta ? "beta " : "")}updates...");
+                var updateUrl = "";
 
 #if APP_RELEASE
-                updateUrl = ReleaseData.UpdateBaseUrl + ReleaseData.UpdateConfigFile +
-                            "?r=" + DateTime.UtcNow.ToEpochTime().ToString();
-                    //Because WebClient won't let you disable caching :(
+                updateUrl = $"{ReleaseData.UpdateBaseUrl}?r={DateTime.UtcNow.ToEpochTime()}"; //Because WebClient won't let you disable caching :(
+#else
+                updateUrl = $"http://localhost:9080/test.json?r={DateTime.UtcNow.ToEpochTime()}";
 #endif
-                Log.O("Downloading update file: " + updateUrl);
+                Log.O($"Downloading update file: {updateUrl}");
 
-                string data = DownloadString(updateUrl);
-
-                var mc = new MapConfig();
-                mc.LoadConfig(data);
-
-                string verStr = mc.GetValue(beta?"BetaVersion":"CurrentVersion", string.Empty);
-                DownloadUrl = mc.GetValue(beta ? "BetaDownloadUrl" : "DownloadUrl", string.Empty);
-                ReleaseNotesPath = mc.GetValue(beta ? "BetaReleaseNotes" : "ReleaseNotes", string.Empty);
+                var data = DownloadString(updateUrl);
 
                 ReleaseNotes = string.Empty;
-                if(ReleaseNotesPath != string.Empty)
+
+                var jsonSettings = new JsonSerializerSettings
                 {
-                    ReleaseNotes = DownloadString(ReleaseNotesPath);
+                    ContractResolver = new DefaultContractResolver
+                    {
+                        NamingStrategy = new SnakeCaseNamingStrategy()
+                    }
+                };
+                var releases = JsonConvert.DeserializeObject<List<Release>>(data , jsonSettings);
+                if (!beta)
+                {
+                    releases = releases.Where(r => !r.Prerelease).ToList();
                 }
 
-                Version ver = null;
+                var latest = releases.OrderByDescending(r => r.Name).First();
 
-                if (!Version.TryParse(verStr, out ver))
+                DownloadUrl = latest.Assets.First(a => a.Name.StartsWith(InstallerNameStartsWith)).BrowserDownloadUrl;
+                ReleaseNotes = latest.Body;
+                if (!Version.TryParse(latest.Name, out var ver))
                 {
                     SendUpdateEvent(false);
                     return false;
@@ -137,9 +143,7 @@ namespace Elpis.UpdateSystem
 
                 NewVersion = ver;
 
-                bool result = false;
-                if (NewVersion > CurrentVersion)
-                    result = true;
+                var result = NewVersion > CurrentVersion;
 
                 UpdateNeeded = result;
                 SendUpdateEvent(result);
@@ -147,26 +151,16 @@ namespace Elpis.UpdateSystem
             }
             catch (Exception e)
             {
-                Log.O("Error checking for updates: " + e);
+                Log.O("Error checking for updates: {0}", e);
                 UpdateNeeded = false;
                 SendUpdateEvent(false);
                 return false;
             }
         }
 
-        public bool CheckForUpdate()
-        {
-            return CheckForUpdateInternal();
-        }
-
-        public bool CheckForBetaUpdate()
-        {
-            return CheckForUpdateInternal(true);
-        }
-
         public void CheckForUpdateAsync()
         {
-            Task.Factory.StartNew(() => CheckForUpdateInternal());
+            Task.Factory.StartNew(() => CheckForUpdate());
         }
 
         public void DownloadUpdateAsync(string outputPath)
@@ -184,14 +178,26 @@ namespace Elpis.UpdateSystem
             else
                 Log.O("Update Download Error: " + e.Error);
 
-            if (DownloadComplete != null)
-                DownloadComplete(e.Error != null, e.Error);
+            DownloadComplete?.Invoke(e.Error != null, e.Error);
         }
 
         private void DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
         {
-            if (DownloadProgress != null)
-                DownloadProgress(e.ProgressPercentage);
+            DownloadProgress?.Invoke(e.ProgressPercentage);
         }
+    }
+
+    internal class Release
+    {
+        public string Name { get; set; }
+        public string Body { get; set; }
+        public bool Prerelease { get; set; }
+        public List<Asset> Assets { get; set; }
+    }
+
+    internal class Asset
+    {
+        public string Name { get; set; }
+        public string BrowserDownloadUrl { get; set; }
     }
 }

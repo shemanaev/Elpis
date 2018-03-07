@@ -38,7 +38,7 @@ namespace Elpis
 
         #endregion
 
-        private UpdateCheck _update;
+        private readonly UpdateCheck _update;
 
         public UpdatePage(UpdateCheck update)
         {
@@ -67,7 +67,7 @@ namespace Elpis
                 }
                 catch(Exception ex)
                 {
-                    Log.O("Trouble creating update directory! " + ex.ToString());
+                    Log.O("Trouble creating update directory! " + ex);
                     return;
                 }
             }
@@ -87,7 +87,7 @@ namespace Elpis
                 {
                     Log.O("Error Downloading Update!");
                     lblDownloadStatus.Text = "Error downloading update. Please try again later.";
-                    btnUpdate.Visibility = System.Windows.Visibility.Hidden;
+                    btnUpdate.Visibility = Visibility.Hidden;
                     btnLater.Content = "Close";
                 }
                 else
@@ -102,15 +102,14 @@ namespace Elpis
         {
             this.BeginDispatch(() =>
             {
-                lblProgress.Content = prog.ToString() + "%";
+                lblProgress.Content = $"{prog}%";
                 progDownload.Value = prog;
             });
         }
 
         private void SendUpdateSelection(bool status)
         {
-            if (UpdateSelectionEvent != null)
-                UpdateSelectionEvent(status);
+            UpdateSelectionEvent?.Invoke(status);
         }
 
         private void btnLater_Click(object sender, RoutedEventArgs e)
@@ -121,15 +120,15 @@ namespace Elpis
         private void btnUpdate_Click(object sender, RoutedEventArgs e)
         {
             //SendUpdateSelection(true);
-            gridReleaseNotes.Visibility = System.Windows.Visibility.Hidden;
-            gridDownload.Visibility = System.Windows.Visibility.Visible;
+            gridReleaseNotes.Visibility = Visibility.Hidden;
+            gridDownload.Visibility = Visibility.Visible;
             DownloadUpdate();
         }
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-            gridReleaseNotes.Visibility = System.Windows.Visibility.Visible;
-            gridDownload.Visibility = System.Windows.Visibility.Hidden;
+            gridReleaseNotes.Visibility = Visibility.Visible;
+            gridDownload.Visibility = Visibility.Hidden;
         }
     }
 }

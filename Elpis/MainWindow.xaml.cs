@@ -778,6 +778,16 @@ namespace Elpis
 
         private void FinalLoad()
         {
+            if (_config.Fields.Elpis_StartMinimized)
+            {
+                this.BeginDispatch(() =>
+                {
+                    WindowState = WindowState.Minimized;
+                    Hide();
+                    ShowInTaskbar = false;
+                });
+            }
+
             Version ver = Assembly.GetEntryAssembly().GetName().Version;
             if (_config.Fields.Elpis_Version == null || _config.Fields.Elpis_Version < ver)
             {
@@ -788,9 +798,12 @@ namespace Elpis
                 _config.Fields.Elpis_Version = ver;
                 _config.SaveConfig();
 
+                var analyticsUrl = string.Empty;
 #if APP_RELEASE
-                if (!string.IsNullOrWhiteSpace(ReleaseData.AnalyticsPostURL)) {
-                    var post = new PostSubmitter(ReleaseData.AnalyticsPostURL);
+                analyticsUrl = ReleaseData.AnalyticsPostURL;
+#endif
+                if (!string.IsNullOrWhiteSpace(analyticsUrl)) {
+                    var post = new PostSubmitter(analyticsUrl);
 
                     post.Add("guid", _config.Fields.Elpis_InstallID);
                     post.Add("curver", oldVer);
@@ -806,7 +819,7 @@ namespace Elpis
                         Log.O(ex.ToString());
                     }
                 }
-#endif
+
             }
 
             _loadingPage.UpdateStatus("Loading audio engine...");
@@ -1010,15 +1023,11 @@ namespace Elpis
 
         private void LoadLastFM()
         {
-            string apiKey = string.Empty;
-            string apiSecret = string.Empty;
+            string apiKey = "dummy_key";
+            string apiSecret = "dummy_key";
 #if APP_RELEASE
-                apiKey = ReleaseData.LastFMApiKey;
-                apiSecret = ReleaseData.LastFMApiSecret;
-#else
-            //Put your own Last.FM API keys here
-            apiKey = "dummy_key";
-            apiSecret = "dummy_key";
+            apiKey = ReleaseData.LastFMApiKey;
+            apiSecret = ReleaseData.LastFMApiSecret;
 #endif
 
             if (!string.IsNullOrEmpty(_config.Fields.LastFM_SessionKey))
@@ -1027,8 +1036,7 @@ namespace Elpis
                 _scrobbler = new PandoraSharpScrobbler(apiKey, apiSecret);
 
             _scrobbler.IsEnabled = _config.Fields.LastFM_Scrobble;
-#if APP_RELEASE
-#else
+#if !APP_RELEASE
             if (_config.Fields.LastFM_Scrobble && !_scrobbler.IsEnabled)
             {
                 System.Windows.MessageBox.Show("You are trying to use Last.FM Scrobbler without a LastFM API key. " +
@@ -1046,32 +1054,15 @@ namespace Elpis
 
         private void LoadLogic()
         {
-            bool foundNewUpdate = false;
             if (InitLogic())
             {
-#if APP_RELEASE
+//#if APP_RELEASE
                 _update = new UpdateCheck();
                 if (_config.Fields.Elpis_CheckUpdates)
                 {
                     _loadingPage.UpdateStatus("Checking for updates...");
-                    if (_update.CheckForUpdate())
+                    if (_update.CheckForUpdate(_config.Fields.Elpis_CheckBetaUpdates))
                     {
-                        foundNewUpdate = true;
-                        this.BeginDispatch(() =>
-                                               {
-                                                   _updatePage = new UpdatePage(_update);
-                                                   _updatePage.UpdateSelectionEvent += _updatePage_UpdateSelectionEvent;
-                                                   transitionControl.AddPage(_updatePage);
-                                                   transitionControl.ShowPage(_updatePage);
-                                               });
-                    }
-                }
-                if (_config.Fields.Elpis_CheckBetaUpdates && !foundNewUpdate)
-                {
-                    _loadingPage.UpdateStatus("Checking for Beta updates...");
-                    if (_update.CheckForBetaUpdate())
-                    {
-                        foundNewUpdate = true;
                         this.BeginDispatch(() =>
                         {
                             _updatePage = new UpdatePage(_update);
@@ -1080,10 +1071,7 @@ namespace Elpis
                             transitionControl.ShowPage(_updatePage);
                         });
                     }
-                }
-                if (_config.Fields.Elpis_CheckBetaUpdates || _config.Fields.Elpis_CheckUpdates)
-                {
-                    if (!foundNewUpdate)
+                    else
                     {
                         FinalLoad();
                     }
@@ -1092,9 +1080,7 @@ namespace Elpis
                 {
                     FinalLoad();
                 }
-#else
-                FinalLoad();
-#endif
+//#endif
             }
         }
 
@@ -1526,12 +1512,6 @@ namespace Elpis
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            if (_config.Fields.Elpis_StartMinimized)
-            {
-                WindowState = WindowState.Minimized;
-                Hide();
-                ShowInTaskbar = false;
-            }
             Task.Factory.StartNew(LoadLogic);
         }
 
