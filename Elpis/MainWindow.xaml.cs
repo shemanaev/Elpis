@@ -66,8 +66,6 @@ namespace Elpis
         private readonly ToolStripSeparator _notifyMenu_BreakExit = new ToolStripSeparator();
         private About _aboutPage;
 
-        private string _configLocation;
-
         private readonly Config _config;
 
         private bool _finalComplete = false;
@@ -101,7 +99,6 @@ namespace Elpis
         private Search _searchPage;
         private Settings _settingsPage;
         private bool _showingError;
-        private string _startupStation = null;
         private bool _stationLoaded;
 
         private SearchMode _searchMode = SearchMode.NewStation;
@@ -138,32 +135,8 @@ namespace Elpis
 
         #endregion
 
-        #region Release Data Values
-
-        private string _bassRegEmail = "";
-        private string _bassRegKey = "";
-
-        public string ConfigLocation
-        {
-            get { return _configLocation; }
-            set { _configLocation = value; }
-        }
-
-        public string StartupStation
-        {
-            get { return _startupStation; }
-            set { _startupStation = value; }
-        }
-
-        public void InitReleaseData()
-        {
-#if APP_RELEASE
-            _bassRegEmail = ReleaseData.BassRegEmail;
-            _bassRegKey = ReleaseData.BassRegKey;
-#endif
-        }
-
-        #endregion
+        public string ConfigLocation { get; set; }
+        public string StartupStation { get; set; } = null;
 
         public MainWindow()
         {
@@ -194,7 +167,7 @@ namespace Elpis
 
             transitionControl.ShowPage(_loadingPage);
 
-            _config = new Config(_configLocation ?? "");
+            _config = new Config(ConfigLocation ?? "");
 
             if (!_config.LoadConfig())
             {
@@ -783,7 +756,6 @@ namespace Elpis
         {
             while (transitionControl.CurrentPage != _loadingPage) Thread.Sleep(10);
             _loadingPage.UpdateStatus("Loading configuration...");
-            InitReleaseData();
 
             if (_configError)
             {
@@ -841,7 +813,7 @@ namespace Elpis
             try
             {
                 _player = new Player();
-                _player.Initialize(_bassRegEmail, _bassRegKey); //TODO - put this in the login sequence?
+                _player.Initialize(); //TODO - put this in the login sequence?
                 if (_config.Fields.Proxy_Address != string.Empty)
                     _player.SetProxy(_config.Fields.Proxy_Address, _config.Fields.Proxy_Port,
                         _config.Fields.Proxy_User, _config.Fields.Proxy_Password);

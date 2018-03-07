@@ -39,7 +39,7 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 [Files]
 Source: "..\Elpis\bin\AppRelease\Elpis.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\Elpis\bin\AppRelease\bass.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\Elpis\bin\AppRelease\Bass.Net.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\Elpis\bin\AppRelease\ManagedBass.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\Elpis\bin\AppRelease\bass_aac.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\Elpis\bin\AppRelease\BassPlayer.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\Elpis\bin\AppRelease\DNS.dll"; DestDir: "{app}"; Flags: ignoreversion

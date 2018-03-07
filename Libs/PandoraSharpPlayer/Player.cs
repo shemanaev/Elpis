@@ -458,7 +458,7 @@ namespace PandoraSharpPlayer
                 }
                 catch (BassStreamException ex)
                 {
-                    if (ex.ErrorCode == Un4seen.Bass.BASSError.BASS_ERROR_FILEOPEN)
+                    if (ex.ErrorCode == ManagedBass.Errors.FileOpen)
                     {
                         _playlist.DoReload();
                     }
