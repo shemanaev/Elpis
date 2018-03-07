@@ -38,9 +38,7 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 
 [Files]
 Source: "..\Elpis\bin\AppRelease\Elpis.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\Elpis\bin\AppRelease\bass.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\Elpis\bin\AppRelease\ManagedBass.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\Elpis\bin\AppRelease\bass_aac.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\Elpis\bin\AppRelease\BassPlayer.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\Elpis\bin\AppRelease\DNS.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\Elpis\bin\AppRelease\Elpis.exe.config"; DestDir: "{app}"; Flags: ignoreversion
@@ -58,6 +56,7 @@ Source: "..\Elpis\bin\AppRelease\PandoraSharpScrobbler.dll"; DestDir: "{app}"; F
 Source: "..\Elpis\bin\AppRelease\PlayerControlQuery.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\Elpis\bin\AppRelease\Util.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\Elpis\bin\AppRelease\RemoteControl\*"; DestDir: "{app}\RemoteControl"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "..\Elpis\bin\AppRelease\platform\*"; DestDir: "{app}\platform"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]

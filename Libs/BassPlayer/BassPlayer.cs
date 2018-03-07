@@ -65,6 +65,30 @@ namespace BassPlayer
     /// </summary>
     public class BassAudioEngine : IDisposable // : IPlayer
     {
+        [DllImport("kernel32.dll")]
+        private static extern IntPtr LoadLibrary(string path);
+
+        private static readonly string ProcessorArch = Environment.Is64BitProcess ? "x64" : "x86";
+
+        private static void LoadDll(string path, string name)
+        {
+            var fileName = Path.GetFullPath($@"{path}\{name}.dll");
+
+            if (File.Exists(fileName))
+            {
+                LoadLibrary(fileName);
+            }
+
+        }
+
+        static BassAudioEngine()
+        {
+            var assemblyPath = Path.GetDirectoryName(new Uri(typeof(BassAudioEngine).Assembly.CodeBase).LocalPath);
+            var path = $@"{assemblyPath}\platform\{ProcessorArch}";
+
+            LoadDll(path, "bass");
+        }
+
         #region Enums
 
         /// <summary>
@@ -764,7 +788,7 @@ namespace BassPlayer
                 throw new BassException(@"BASS: Unable to load AAC decoder.");
             }
 
-            string aacDecoder = Path.Combine(decoderFolderPath, "bass_aac.dll");
+            string aacDecoder = Path.Combine(decoderFolderPath, $@"platform\{ProcessorArch}", "bass_aac.dll");
 
             int pluginHandle = 0;
             if ((pluginHandle = Bass.PluginLoad(aacDecoder)) != 0)
