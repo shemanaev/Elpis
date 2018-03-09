@@ -85,10 +85,10 @@ namespace Elpis
         private ToolStripMenuItem _notifyMenu_Tired;
         private ToolStripMenuItem _notifyMenu_Exit;
 
-        private ThumbnailToolbarButton _thumbnailToolbarThumbUp;
-        private ThumbnailToolbarButton _thumbnailToolbarThumbDown;
-        private ThumbnailToolbarButton _thumbnailToolbarPlayPause;
-        private ThumbnailToolbarButton _thumbnailToolbarSkip;
+        private ThumbnailToolBarButton _thumbnailToolbarThumbUp;
+        private ThumbnailToolBarButton _thumbnailToolbarThumbDown;
+        private ThumbnailToolBarButton _thumbnailToolbarPlayPause;
+        private ThumbnailToolBarButton _thumbnailToolbarSkip;
 
         private System.Threading.Timer _notifyDoubleClickTimer;
         private static Boolean _notifyDoubleClicked = false;
@@ -719,12 +719,12 @@ namespace Elpis
 
         private void SetupThumbnailToolbarButtons()
         {
-            _thumbnailToolbarThumbUp = new ThumbnailToolbarButton(Properties.Resources.thumbs_up_icon, "Thumb Up");
-            _thumbnailToolbarThumbDown = new ThumbnailToolbarButton(Properties.Resources.thumbs_down_icon, "Thumb Down");
-            _thumbnailToolbarPlayPause = new ThumbnailToolbarButton(Properties.Resources.play_pause, "Play/Pause");
-            _thumbnailToolbarSkip = new ThumbnailToolbarButton(Properties.Resources.skip_song, "Skip");
+            _thumbnailToolbarThumbUp = new ThumbnailToolBarButton(Properties.Resources.thumbs_up_icon, "Thumb Up");
+            _thumbnailToolbarThumbDown = new ThumbnailToolBarButton(Properties.Resources.thumbs_down_icon, "Thumb Down");
+            _thumbnailToolbarPlayPause = new ThumbnailToolBarButton(Properties.Resources.play_pause, "Play/Pause");
+            _thumbnailToolbarSkip = new ThumbnailToolBarButton(Properties.Resources.skip_song, "Skip");
 
-            TaskbarManager.Instance.ThumbnailToolbars.AddButtons((new WindowInteropHelper(this)).Handle,
+            TaskbarManager.Instance.ThumbnailToolBars.AddButtons((new WindowInteropHelper(this)).Handle,
                 _thumbnailToolbarThumbUp, _thumbnailToolbarPlayPause, _thumbnailToolbarSkip, _thumbnailToolbarThumbDown);
             _thumbnailToolbarThumbUp.Click += _thumbnailToolbarThumbUp_Click;
             _thumbnailToolbarThumbDown.Click += _thumbnailToolbarThumbDown_Click;
