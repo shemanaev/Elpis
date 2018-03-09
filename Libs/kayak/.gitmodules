@@ -1,3 +1,0 @@
-[submodule "lib/httpmachine"]
-	path = lib/httpmachine
-	url = https://github.com/bvanderveen/httpmachine.git

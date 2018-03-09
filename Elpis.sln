@@ -27,8 +27,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PandoraSharpScrobbler", "Li
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lpfm.LastFmScrobbler", "Libs\LastFmScrobbler\Lpfm.LastFmScrobbler.csproj", "{BA7F7E8A-B089-4323-8C8D-F406E7AFCDBE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kayak", "Libs\kayak\Kayak\Kayak.csproj", "{79DDD0CE-6F79-4212-A972-8618AD6E405F}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		AppRelease|Any CPU = AppRelease|Any CPU
@@ -216,21 +214,6 @@ Global
 		{BA7F7E8A-B089-4323-8C8D-F406E7AFCDBE}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{BA7F7E8A-B089-4323-8C8D-F406E7AFCDBE}.Release|x86.ActiveCfg = Release|Any CPU
 		{BA7F7E8A-B089-4323-8C8D-F406E7AFCDBE}.Release|x86.Build.0 = Release|Any CPU
-		{79DDD0CE-6F79-4212-A972-8618AD6E405F}.AppRelease|Any CPU.ActiveCfg = Release|Any CPU
-		{79DDD0CE-6F79-4212-A972-8618AD6E405F}.AppRelease|Any CPU.Build.0 = Release|Any CPU
-		{79DDD0CE-6F79-4212-A972-8618AD6E405F}.AppRelease|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{79DDD0CE-6F79-4212-A972-8618AD6E405F}.AppRelease|Mixed Platforms.Build.0 = Release|Any CPU
-		{79DDD0CE-6F79-4212-A972-8618AD6E405F}.AppRelease|x86.ActiveCfg = Release|Any CPU
-		{79DDD0CE-6F79-4212-A972-8618AD6E405F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{79DDD0CE-6F79-4212-A972-8618AD6E405F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{79DDD0CE-6F79-4212-A972-8618AD6E405F}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{79DDD0CE-6F79-4212-A972-8618AD6E405F}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{79DDD0CE-6F79-4212-A972-8618AD6E405F}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{79DDD0CE-6F79-4212-A972-8618AD6E405F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{79DDD0CE-6F79-4212-A972-8618AD6E405F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{79DDD0CE-6F79-4212-A972-8618AD6E405F}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{79DDD0CE-6F79-4212-A972-8618AD6E405F}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{79DDD0CE-6F79-4212-A972-8618AD6E405F}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -245,7 +228,6 @@ Global
 		{E252FF08-F527-4A42-9A69-D28F4AE6052D} = {CC987F15-1B4B-4F63-95F5-E2E554C11986}
 		{19FB9DF6-5C82-439D-94C7-521E6EAF3FF3} = {CC987F15-1B4B-4F63-95F5-E2E554C11986}
 		{BA7F7E8A-B089-4323-8C8D-F406E7AFCDBE} = {CC987F15-1B4B-4F63-95F5-E2E554C11986}
-		{79DDD0CE-6F79-4212-A972-8618AD6E405F} = {CC987F15-1B4B-4F63-95F5-E2E554C11986}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {17A98415-78E2-41A4-97BB-149BD1D1FEFC}
