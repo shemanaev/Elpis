@@ -1560,14 +1560,9 @@ namespace Elpis
 
         private void Window_StateChanged(object sender, EventArgs e)
         {
-            if (WindowState == WindowState.Minimized && _config.Fields.Elpis_MinimizeToTray)
+            if (WindowState != WindowState.Minimized)
             {
-                this.Hide();
-                ShowInTaskbar = false;
-            }
-            else
-            {
-                this.Show();
+                Show();
                 ShowInTaskbar = true;
             }
         }
