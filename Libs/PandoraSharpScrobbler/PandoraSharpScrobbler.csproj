@@ -50,6 +50,9 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Lpfm.LastFmScrobbler, Version=1.3.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Lpfm.LastFmScrobbler.dll.1.3.0\lib\net40\Lpfm.LastFmScrobbler.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -63,10 +66,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\LastFmScrobbler\Lpfm.LastFmScrobbler.csproj">
-      <Project>{BA7F7E8A-B089-4323-8C8D-F406E7AFCDBE}</Project>
-      <Name>Lpfm.LastFmScrobbler</Name>
-    </ProjectReference>
     <ProjectReference Include="..\PandoraSharp\PandoraSharp.csproj">
       <Project>{64DD2B7D-9069-41FF-A4E4-732F6DF82F09}</Project>
       <Name>PandoraSharp</Name>
@@ -79,6 +78,9 @@
       <Project>{A79647D6-4A05-4382-8B6E-4FEC154C3222}</Project>
       <Name>Util</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
