@@ -112,6 +112,7 @@
                         </Grid.ColumnDefinitions>
                         <CheckBox Name="chkCheckUpdates" Grid.Row="0" Margin="4"
                                   IsChecked="True"
+                                  Click="chkCheckUpdates_Click"
                                   Content="Check for Updates" />
                         <CheckBox Name="chkCheckBetaUpdates" Grid.Row="1" Grid.Column="0" Margin="4"
                                   IsChecked="False"

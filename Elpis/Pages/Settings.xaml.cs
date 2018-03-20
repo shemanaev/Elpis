@@ -92,6 +92,7 @@ namespace Elpis
             chkTrayMinimize.IsChecked = _config.Fields.Elpis_MinimizeToTray;
             chkShowNotify.IsChecked = _config.Fields.Elpis_ShowTrayNotifications;
             chkPauseOnLock.IsChecked = _config.Fields.Elpis_PauseOnLock;
+            chkCheckBetaUpdates.IsEnabled = _config.Fields.Elpis_CheckUpdates;
             chkCheckBetaUpdates.IsChecked = _config.Fields.Elpis_CheckBetaUpdates;
             chkRemoteControlEnabled.IsChecked = _config.Fields.Elpis_RemoteControlEnabled;
 
@@ -335,6 +336,11 @@ namespace Elpis
             {
                 txtDnsServer.Text = string.Empty;
             }
+        }
+
+        private void chkCheckUpdates_Click(object sender, RoutedEventArgs e)
+        {
+            chkCheckBetaUpdates.IsEnabled = (sender as CheckBox).IsChecked ?? false;
         }
     }
 
