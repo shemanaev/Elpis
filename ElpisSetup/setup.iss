@@ -6,6 +6,7 @@
 #define MyAppPublisher "Denis Shemanaev"
 #define MyAppURL "https://github.com/shemanaev/Elpis"
 #define MyAppExeName "Elpis.exe"
+#define AppReleaseDir "..\Elpis\bin\AppRelease"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application.
@@ -22,13 +23,14 @@ AppUpdatesURL={#MyAppURL}
 DefaultDirName={pf}\{#MyAppName}
 DefaultGroupName={#MyAppName}
 LicenseFile=..\Elpis\License.txt
-OutputDir=..\Elpis\bin\setup
+OutputDir=build
 OutputBaseFilename=Elpis_v{#MyAppVersion}
 Compression=lzma
 SolidCompression=yes
 ShowLanguageDialog=no
 UninstallDisplayIcon={app}\Elpis.exe
 MinVersion=0,6.2
+ArchitecturesInstallIn64BitMode=x64
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
@@ -37,26 +39,30 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "..\Elpis\bin\AppRelease\Elpis.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\Elpis\bin\AppRelease\ManagedBass.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\Elpis\bin\AppRelease\BassPlayer.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\Elpis\bin\AppRelease\DNS.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\Elpis\bin\AppRelease\Elpis.exe.config"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\Elpis\bin\AppRelease\Interop.IWshRuntimeLibrary.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\Elpis\bin\AppRelease\Kayak.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\Elpis\bin\AppRelease\Lpfm.LastFmScrobbler.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\Elpis\bin\AppRelease\Microsoft.Toolkit.Uwp.Notifications.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\Elpis\bin\AppRelease\Microsoft.WindowsAPICodePack.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\Elpis\bin\AppRelease\Microsoft.WindowsAPICodePack.Shell.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\Elpis\bin\AppRelease\netstandard.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\Elpis\bin\AppRelease\Newtonsoft.Json.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\Elpis\bin\AppRelease\PandoraSharp.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\Elpis\bin\AppRelease\PandoraSharpPlayer.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\Elpis\bin\AppRelease\PandoraSharpScrobbler.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\Elpis\bin\AppRelease\PlayerControlQuery.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\Elpis\bin\AppRelease\Util.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\Elpis\bin\AppRelease\RemoteControl\*"; DestDir: "{app}\RemoteControl"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "..\Elpis\bin\AppRelease\platform\*"; DestDir: "{app}\platform"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "{#AppReleaseDir}\Elpis.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#AppReleaseDir}\Elpis.exe.config"; DestDir: "{app}"; Flags: ignoreversion
+
+Source: "{#AppReleaseDir}\Util.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#AppReleaseDir}\BassPlayer.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#AppReleaseDir}\PandoraSharp.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#AppReleaseDir}\PandoraSharpPlayer.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#AppReleaseDir}\PandoraSharpScrobbler.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#AppReleaseDir}\PlayerControlQuery.dll"; DestDir: "{app}"; Flags: ignoreversion
+
+Source: "{#AppReleaseDir}\DNS.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#AppReleaseDir}\Kayak.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#AppReleaseDir}\ManagedBass.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#AppReleaseDir}\Newtonsoft.Json.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#AppReleaseDir}\Lpfm.LastFmScrobbler.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#AppReleaseDir}\Interop.IWshRuntimeLibrary.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#AppReleaseDir}\Microsoft.WindowsAPICodePack.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#AppReleaseDir}\Microsoft.WindowsAPICodePack.Shell.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#AppReleaseDir}\Microsoft.Toolkit.Uwp.Notifications.dll"; DestDir: "{app}"; Flags: ignoreversion
+
+Source: "{#AppReleaseDir}\netstandard.dll"; DestDir: "{app}"; Flags: ignoreversion
+
+Source: "{#AppReleaseDir}\platform\*"; DestDir: "{app}\platform"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "{#AppReleaseDir}\RemoteControl\*"; DestDir: "{app}\RemoteControl"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
