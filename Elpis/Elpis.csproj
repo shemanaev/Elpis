@@ -118,6 +118,9 @@
     <Compile Include="ReleaseData\ReleaseData.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\ElpisSetup\SharedVersion.cs">
+      <Link>Properties\SharedVersion.cs</Link>
+    </Compile>
     <Compile Include="JsonConverters.cs" />
     <Compile Include="MyColorTable.cs" />
     <Compile Include="Properties\Resources.Designer.cs">

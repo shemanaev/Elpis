@@ -2,11 +2,11 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "Elpis"
-#define MyAppVersion "1.7"
 #define MyAppPublisher "Denis Shemanaev"
 #define MyAppURL "https://github.com/shemanaev/Elpis"
 #define MyAppExeName "Elpis.exe"
 #define AppReleaseDir "..\Elpis\bin\AppRelease"
+#define MyAppVersion StringChange(GetFileVersion(AddBackslash(AppReleaseDir) + MyAppExeName), ".0", "")
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application.
